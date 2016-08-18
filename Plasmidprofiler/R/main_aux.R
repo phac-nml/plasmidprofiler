@@ -1,0 +1,132 @@
+#  =============================================================================
+#
+# Copyright Government of Canada 2015-2016
+#
+# Written by: Adrian Zetner, Public Health Agency of Canada,
+#     National Microbiology Laboratory
+#
+# Funded by the National Micriobiology Laboratory
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+# this file except in compliance with the License. You may obtain a copy of the
+# License at:
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software distributed
+# under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+# CONDITIONS OF ANY KIND, either express or implied. See the License for the
+# specific language governing permissions and limitations under the License.
+#
+#  =============================================================================
+
+
+#' Run everything
+#'
+#' Run all the interim functions to produce jpg, csv, and html outputs.
+#'
+#' @param blast.file System location of blast results (tsv)
+#' @param srst2.file System location of srst2 results (tsv)
+#' @param coverage.filter Filters results below percent read coverage specified (eg. 80)
+#' @param sureness.filter Filters results below sureness specified (eg. 0.75)
+#' @param length.filter Filters plasmid sequences shorter than length specified (eg. 10000)
+#' @param combine.inc Flag to ombine incompatibility sub-groups into their main type (set to 1)
+#' @param main.title A title for the figure
+#' @return Saves output files in working directory
+#' @examples
+#' main("data/blast_results.tsv", "data/srst2_results.tsv", cov.filter=NA, sureness.filter=0.75, len.filter=10000, main.title="Example Results"))
+#' @export
+main <- function(blast.file,
+                 srst2.file,
+                 coverage.filter=NA,
+                 sureness.filter = NA,
+                 length.filter = NA,
+                 combine.inc=NA,
+                 plotly.user,
+                 plotly.api,
+                 post.plotly=NA,
+                 main.title="Plasmid Profiles") {
+
+  br <- read_blast(blast.file)
+  blast_results <- blast_parser(br)
+  PosSamples <- amr_positives(br)
+  sr <- read_srst2(srst2.file)
+  cr <- combine_results(sr, blast_results)
+  report <- zetner_score(cr)
+  report <- amr_presence(report, PosSamples)
+  report <- subsampler(report, cov.filter=coverage.filter, sure.filter=sureness.filter, len.filter=length.filter, inc.combine=combine.inc)
+  report <- order_report(report)
+  save_files(report, plot.jpg = 1, report.csv = 1, title = main.title)
+  create_plotly(report, user = plotly.user, api.key = plotly.api, post = post.plotly, title=main.title)
+  save_files(report, webpage = 1, title = main.title)
+}
+
+#' Save Files Produced
+#'
+#' This function uses RColorBrewer to produce palettes based on the factor levels of the identified column in a report.
+#'
+#' @param report Dataframe of results
+#' @param plot.jpg Do you want to save a jpg? (Anything but NA)
+#' @param report.csv Do you want to save a text report? (Anything but NA)
+#' @param webpage Do you want to save an interactive heatmap as html? (Anything but NA)
+#' @return Named vector of colours, names are factor levels of column supplied
+#' @import ggplot2
+#' @import dplyr
+#' @import plotly
+#' @examples
+#' save_files(report, plot.jpg=1, report.csv=1, webpage=NA)
+#' @export
+save_files <- function(report, plot.jpg=NA, report.csv=NA, webpage=NA, title="Plasmid Profiles" ){
+  if(!is.na(plot.jpg)){
+    g <- create_grob(report, grob.title = title)
+    ggsave(paste(filename, ".jpg", sep=""), g, device = "jpg", width = 12)
+  }
+
+  if(!is.na(report.csv)){
+    report <- arrange(report, Sample, Inc_group, desc(Sureness))
+    write.csv(report[,c(1:9)], paste(filename, ".csv", sep = ""))
+  }
+
+  # Write offline HTML object
+  if(!is.na(webpage)){
+    ppp <- create_plotly(report)
+    htmlwidgets::saveWidget(as.widget(ppp), paste(filename, ".html", sep=""))
+  }
+}
+
+#' Normalize
+#'
+#' Normalizes a vector of values to a range of 0-1
+#'
+#' @param x Vector of values
+#' @return Normalized vector of values
+#' @examples
+#' normalize(x)
+#' @export
+normalize <- function(x){
+  (x-min(x))/(max(x)-min(x))
+}
+
+#' Minmax
+#'
+#' Takes two columns of numerical data, normalizes it to ranges from 0 to 1 (0 to -1 for minimums),
+#' sums them, arranges by sum, then returns the sorted dataframe
+#'
+#' @param df Dataframe
+#' @param maxcol Column to normalize from 0 to 1
+#' @param mincol Column to normalize from 0 to -1
+#' @return Dataframe sorted by sum of maxcol and mincol
+#' @importFrom dplyr arrange
+#' @examples
+#' minmax(df, maxcol, mincol)
+#' @export
+
+# returns the sorted dataframe
+minmax <- function(df,maxcol,mincol){
+  mincolnorm <- -normalize(df[,mincol])
+  maxcolnorm <- normalize(df[,maxcol])
+  mmsum <- maxcolnorm + mincolnorm
+  df$mmsum <- mmsum
+  df <- arrange(df,desc(mmsum))
+  df
+}
