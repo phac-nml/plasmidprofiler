@@ -1,0 +1,12 @@
+* installing *source* package ‘Plasmidprofiler’ ...
+** R
+** data
+*** moving datasets to lazyload DB
+** preparing package for lazy loading
+Warning: replacing previous import ‘ggplot2::last_plot’ by ‘plotly::last_plot’ when loading ‘Plasmidprofiler’
+** help
+*** installing help indices
+** building package indices
+** testing if installed package can be loaded
+Warning: replacing previous import ‘ggplot2::last_plot’ by ‘plotly::last_plot’ when loading ‘Plasmidprofiler’
+* DONE (Plasmidprofiler)
