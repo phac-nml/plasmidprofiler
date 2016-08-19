@@ -34,7 +34,7 @@
 #' @param main.title A title for the figure
 #' @return Saves output files in working directory
 #' @examples
-#' main("data/blast_results.tsv", "data/srst2_results.tsv", cov.filter=NA, sureness.filter=0.75, len.filter=10000, main.title="Example Results"))
+#' main("data/blast_results.tsv", "data/srst2_results.tsv", cov.filter=NA, sureness.filter=0.75, len.filter=10000, main.title="Example Results")
 #' @export
 main <- function(blast.file,
                  srst2.file,
