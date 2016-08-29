@@ -5,7 +5,7 @@
 # Written by: Adrian Zetner, Public Health Agency of Canada,
 #     National Microbiology Laboratory
 #
-# Funded by the National Micriobiology Laboratory
+# Funded by the National Microbiology Laboratory
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may not use
 # this file except in compliance with the License. You may obtain a copy of the
@@ -40,7 +40,7 @@ define_colours <- function(report, column){
   if (column == "AMR_gene"){
     colours <- colorRampPalette(inferno(20, end = 0.7))(length(levels(report[[column]])))
   }else{
-    colours <- colorRampPalette(brewer.pal(length(levels(report[[column]])), "Set1"))(length(levels(report[[column]])))
+    colours <- colorRampPalette(brewer.pal(9, "Set1"))(length(levels(report[[column]])))
   }
   names(colours) <- levels(report[[column]])
   colours
@@ -117,6 +117,8 @@ plot_heatmap <- function(report, len.highlight=NA){
 #' @return Composite image
 #' @import ggplot2
 #' @import grid
+#' @import gridExtra
+#' @import gtable
 #'
 #' @examples
 #' create_grob(report, title="Plasmid Profiles")

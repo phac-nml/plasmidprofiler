@@ -30,6 +30,6 @@ Saves output files in working directory
 Run all the interim functions to produce jpg, csv, and html outputs.
 }
 \examples{
-main("data/blast_results.tsv", "data/srst2_results.tsv", cov.filter=NA, sureness.filter=0.75, len.filter=10000, main.title="Example Results"))
+main("data/blast_results.tsv", "data/srst2_results.tsv", cov.filter=NA, sureness.filter=0.75, len.filter=10000, main.title="Example Results")
 }
 

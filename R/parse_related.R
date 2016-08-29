@@ -5,7 +5,7 @@
 # Written by: Adrian Zetner, Public Health Agency of Canada,
 #     National Microbiology Laboratory
 #
-# Funded by the National Micriobiology Laboratory
+# Funded by the National Microbiology Laboratory
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may not use
 # this file except in compliance with the License. You may obtain a copy of the
@@ -34,7 +34,31 @@
 
 read_blast <- function(br.file){
   # Define column names, import blast output tabular file
-  blast_cols<-c("qseqid", "sseqid","pident","length","mismatch","gapopen","qstart","qend","sstart","send","evalue","bitscore","sallseqid","score","nident","positive","gaps","ppos","qframe","sframe","qseq","sseq","qlen","slen","salltitles")
+  blast_cols<-c("qseqid",
+                "sseqid",
+                "pident",
+                "length",
+                "mismatch",
+                "gapopen",
+                "qstart",
+                "qend",
+                "sstart",
+                "send",
+                "evalue",
+                "bitscore",
+                "sallseqid",
+                "score",
+                "nident",
+                "positive",
+                "gaps",
+                "ppos",
+                "qframe",
+                "sframe",
+                "qseq",
+                "sseq",
+                "qlen",
+                "slen",
+                "salltitles")
   filename <<- paste(str_split_fixed(str_split_fixed(str_extract(br.file, "blast.*"), '\\.', 2)[1], '_',2)[2], "_P2run", Sys.Date(), sep="")
   read.table(br.file, sep="\t", col.names=blast_cols)
 }

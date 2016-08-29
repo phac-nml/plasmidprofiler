@@ -5,7 +5,7 @@
 # Written by: Adrian Zetner, Public Health Agency of Canada,
 #     National Microbiology Laboratory
 #
-# Funded by the National Micriobiology Laboratory
+# Funded by the National Microbiology Laboratory
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may not use
 # this file except in compliance with the License. You may obtain a copy of the
@@ -78,6 +78,8 @@ amr_presence <- function(report, pos.samples){
 #' @param len.filter Filters plasmid sequences shorter than length specified (eg. 10000)
 #' @param inc.combine Flag to ombine incompatibility sub-groups into their main type (set to 1)
 #' @return Report with filters applied
+#' @importFrom gdata drop.levels
+#' @importFrom stringr str_split_fixed
 #' @examples
 #' subsampler(report, sureness.filter = 0.75, len.filter = 10000)
 #' @export
@@ -115,9 +117,10 @@ subsampler <- function(report, cov.filter=NA, sure.filter=NA, len.filter=NA, inc
 #' @examples
 #' tree_maker(report)
 #' @importFrom reshape2 dcast
+#' @importFrom ape as.phylo
 #' @importFrom ggplot2 ggplot
 #' @importFrom grid unit
-#' @importFrom ggdendro dendro_data segment
+#' @importFrom ggdendro dendro_data segment theme_dendro
 #' @export
 tree_maker <- function(report, hc.only=NA){
   reportable.wide <- dcast(report, Sample ~ Plasmid, value.var="Sureness")

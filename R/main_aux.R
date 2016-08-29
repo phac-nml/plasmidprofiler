@@ -5,7 +5,7 @@
 # Written by: Adrian Zetner, Public Health Agency of Canada,
 #     National Microbiology Laboratory
 #
-# Funded by the National Micriobiology Laboratory
+# Funded by the National Microbiology Laboratory
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may not use
 # this file except in compliance with the License. You may obtain a copy of the
@@ -73,6 +73,7 @@ main <- function(blast.file,
 #' @import ggplot2
 #' @import dplyr
 #' @import plotly
+#' @importFrom htmlwidgets saveWidget
 #' @examples
 #' save_files(report, plot.jpg=1, report.csv=1, webpage=NA)
 #' @export
