@@ -15,14 +15,19 @@ save_files(report, plot.jpg = NA, report.csv = NA, webpage = NA,
 \item{report.csv}{Do you want to save a text report? (Anything but NA)}
 
 \item{webpage}{Do you want to save an interactive heatmap as html? (Anything but NA)}
+
+\item{title}{Enter a title for the plot}
 }
 \value{
 Named vector of colours, names are factor levels of column supplied
 }
 \description{
-This function uses RColorBrewer to produce palettes based on the factor levels of the identified column in a report.
+This function uses RColorBrewer to produce palettes based
+on the factor levels of the identified column in a report.
 }
 \examples{
-save_files(report, plot.jpg=1, report.csv=1, webpage=NA)
+\dontrun{
+ save_files(report, plot.jpg=1, report.csv=1, webpage=NA)
+}
 }
 

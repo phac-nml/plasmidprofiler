@@ -20,6 +20,8 @@ This function uses RColorBrewer to produce palettes based on the factor levels o
    }
 }
 \examples{
+\dontrun{
 define_colours(report, "AMR_gene")
+}
 }
 

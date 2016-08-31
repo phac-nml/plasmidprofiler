@@ -16,6 +16,8 @@ Normalized vector of values
 Normalizes a vector of values to a range of 0-1
 }
 \examples{
-normalize(x)
+\dontrun{
+ normalize(x)
+ }
 }
 

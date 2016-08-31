@@ -17,7 +17,9 @@ Runs mimmax function on Coverage and Divergence, returns sum of normalized Cover
 a value which is then normalized from 0 to 1.
 }
 \examples{
+\dontrun{
 zetner_score(report)
+}
 }
 \seealso{
 \code{\link{subsampler}}, \code{\link{combine_results}}

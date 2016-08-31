@@ -7,16 +7,23 @@
 amr_presence(report, pos.samples)
 }
 \arguments{
-\item{report}{Dataframe of results produced by \code{\link{subsampler}} or \code{\link{combine_results}}}
+\item{report}{Dataframe of results produced
+by \code{\link{subsampler}} or \code{\link{combine_results}}}
+
+\item{pos.samples}{Two column DF of plasmid names and genes present produced
+by \code{\link{amr_positives}}}
 }
 \value{
 Report with AMR_genes added
 }
 \description{
-Appends the results of amr_positives to the report in column AMR_gene, missing have "-" instead
+Appends the results of amr_positives to the report
+in column AMR_gene, missing have "-" instead
 }
 \examples{
-amr_presence(report)
+\dontrun{
+amr_presence(report, pos.samples)
+}
 }
 \seealso{
 \code{\link{subsampler}}, \code{\link{combine_results}}

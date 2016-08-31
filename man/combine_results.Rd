@@ -19,6 +19,8 @@ Cuts to desired columns, matches plasmids to BR and appends simplified INC names
 all future modifications are done to this dataframe
 }
 \examples{
+\dontrun{
 combine_results(example_srst2_results, example_blast_results)
+}
 }
 

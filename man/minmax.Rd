@@ -17,10 +17,13 @@ minmax(df, maxcol, mincol)
 Dataframe sorted by sum of maxcol and mincol
 }
 \description{
-Takes two columns of numerical data, normalizes it to ranges from 0 to 1 (0 to -1 for minimums),
+Takes two columns of numerical data,
+normalizes it to ranges from 0 to 1 (0 to -1 for minimums),
 sums them, arranges by sum, then returns the sorted dataframe
 }
 \examples{
-minmax(df, maxcol, mincol)
+\dontrun{
+ minmax(df, maxcol, mincol)
+ }
 }
 

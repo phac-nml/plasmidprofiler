@@ -18,7 +18,9 @@ Ordered report
 Order the report first by sample order (tree), then by incompatibility group, then by sureness on each plasmid
 }
 \examples{
+\dontrun{
 order_report(report)
+}
 }
 \seealso{
 \code{\link{subsampler}}, \code{\link{combine_results}}

@@ -17,6 +17,8 @@ This function loads the imported blast results, extracts desired columns, Create
 length to query length - higher as denominator, adjusts pID by this ratio. Any AMR results are removed from the returned df.
 }
 \examples{
+\dontrun{
 blast_parser(example_blast_results)
+}
 }
 

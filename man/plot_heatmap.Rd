@@ -20,6 +20,8 @@ coloured by incompatibility group, with alpha values from the sureness Zetner sc
 samples is determined by order_reporty and plasmids by incompatibility group and Zetner score.
 }
 \examples{
+\dontrun{
 plot_heatmap(report)
+}
 }
 

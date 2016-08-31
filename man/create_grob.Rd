@@ -18,6 +18,8 @@ Composite image
 Combines the tree, heatmap, and titles to create final heatmap image.
 }
 \examples{
-create_grob(report, title="Plasmid Profiles")
+
+create_grob(report, grob.title="Plasmid Profiles")
+
 }
 

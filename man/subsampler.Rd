@@ -8,7 +8,8 @@ subsampler(report, cov.filter = NA, sure.filter = NA, len.filter = NA,
   inc.combine = NA)
 }
 \arguments{
-\item{report}{Dataframe of results produced by \code{\link{subsampler}} or \code{\link{combine_results}}}
+\item{report}{Dataframe of results produced
+by \code{\link{subsampler}} or \code{\link{combine_results}}}
 
 \item{cov.filter}{Filters results below percent read coverage specified (eg. 80)}
 
@@ -32,7 +33,9 @@ Report with filters applied
    Incompatibility groups can also be combined (eg. Fii(S) and Fii(K) are combined into Fii)}
 }
 \examples{
+\dontrun{
 subsampler(report, sureness.filter = 0.75, len.filter = 10000)
+}
 }
 \seealso{
 \code{\link{subsampler}}, \code{\link{combine_results}}

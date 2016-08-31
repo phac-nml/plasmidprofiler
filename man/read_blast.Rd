@@ -16,6 +16,8 @@ Dataframe of blast data with correct column headers.
 This function imports the 25 column blast file and adds column headers while designating the base filename.
 }
 \examples{
+\dontrun{
 read_blast("/data/blast_results.tsv")
+}
 }
 

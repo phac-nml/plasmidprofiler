@@ -30,7 +30,9 @@
 #' @param report Dataframe of results produced by \code{\link{subsampler}} or \code{\link{combine_results}}
 #' @return Report with zetner score added
 #' @examples
+#' \dontrun{
 #' zetner_score(report)
+#' }
 #' @export
 zetner_score <- function(report){
   # Combined maximum of coverage and minimum of divergence
@@ -44,13 +46,19 @@ zetner_score <- function(report){
 
 #' Adds the AMR_gene column to report
 #'
-#' Appends the results of amr_positives to the report in column AMR_gene, missing have "-" instead
+#' Appends the results of amr_positives to the report
+#' in column AMR_gene, missing have "-" instead
 #'
 #' @seealso \code{\link{subsampler}}, \code{\link{combine_results}}
-#' @param report Dataframe of results produced by \code{\link{subsampler}} or \code{\link{combine_results}}
+#' @param report Dataframe of results produced
+#' by \code{\link{subsampler}} or \code{\link{combine_results}}
+#' @param pos.samples Two column DF of plasmid names and genes present produced
+#' by \code{\link{amr_positives}}
 #' @return Report with AMR_genes added
 #' @examples
-#' amr_presence(report)
+#' \dontrun{
+#' amr_presence(report, pos.samples)
+#' }
 #' @export
 amr_presence <- function(report, pos.samples){
   # Mark plasmids with AMR present and type
@@ -72,7 +80,8 @@ amr_presence <- function(report, pos.samples){
 #'    Incompatibility groups can also be combined (eg. Fii(S) and Fii(K) are combined into Fii)}
 #'
 #' @seealso \code{\link{subsampler}}, \code{\link{combine_results}}
-#' @param report Dataframe of results produced by \code{\link{subsampler}} or \code{\link{combine_results}}
+#' @param report Dataframe of results produced
+#' by \code{\link{subsampler}} or \code{\link{combine_results}}
 #' @param cov.filter Filters results below percent read coverage specified (eg. 80)
 #' @param sure.filter Filters results below sureness specified (eg. 0.75)
 #' @param len.filter Filters plasmid sequences shorter than length specified (eg. 10000)
@@ -81,7 +90,9 @@ amr_presence <- function(report, pos.samples){
 #' @importFrom gdata drop.levels
 #' @importFrom stringr str_split_fixed
 #' @examples
+#' \dontrun{
 #' subsampler(report, sureness.filter = 0.75, len.filter = 10000)
+#' }
 #' @export
 subsampler <- function(report, cov.filter=NA, sure.filter=NA, len.filter=NA, inc.combine=NA){
 
@@ -98,8 +109,10 @@ subsampler <- function(report, cov.filter=NA, sure.filter=NA, len.filter=NA, inc
     report <- report[report$Length > len.filter,]
   }
   if (!is.na(inc.combine)){
-    report$Inc_group <- str_split_fixed(report$Inc_group, '\\(', 2)[,1] # Simplify names of Inc groups (remove the subsetting)
-    report$Inc_group[grep('Col', report$Inc_group)] <- 'Col' # Replace all individual Col-type plasmids with just Col
+    # Simplify names of Inc groups (remove the subsetting)
+    report$Inc_group <- str_split_fixed(report$Inc_group, '\\(', 2)[,1]
+    # Replace all individual Col-type plasmids with just Col
+    report$Inc_group[grep('Col', report$Inc_group)] <- 'Col'
   }
   drop.levels(report)
 }
@@ -107,20 +120,26 @@ subsampler <- function(report, cov.filter=NA, sure.filter=NA, len.filter=NA, inc
 
 #' Create Dendrogram Based on Plasmid Content
 #'
-#' Reads report, converts to matrix of Sample ~ Plasmid with Sureness as cell values. Performs a hierarchical cluster analysis
-#' on a set of dissimilarities derived from the matrix. Creates a dendrogram from this data. Returns either the HC data or
-#' the dendrogram plot
+#' Reads report, converts to matrix of Sample ~ Plasmid with Sureness as cell values.
+#' Performs a hierarchical cluster analysis on a set of dissimilarities derived from the matrix.
+#' Creates a dendrogram from this data. Returns either the HC data or the dendrogram plot
+#'
 #' @seealso \code{\link{subsampler}}, \code{\link{combine_results}}
-#' @param report Dataframe of results produced by \code{\link{subsampler}} or \code{\link{combine_results}}
-#' @param hc.only Flag to return only hierarchical clustering results instead of dendrogram plot (set to 1)
+#' @param report Dataframe of results produced
+#' by \code{\link{subsampler}} or \code{\link{combine_results}}
+#' @param hc.only Flag to return only hierarchical clustering
+#' results instead of dendrogram plot (set to 1)
 #' @return Dendrogram object or hierarchical clustering results
 #' @examples
+#' \dontrun{
 #' tree_maker(report)
+#' }
 #' @importFrom reshape2 dcast
 #' @importFrom ape as.phylo
 #' @importFrom ggplot2 ggplot
 #' @importFrom grid unit
 #' @importFrom ggdendro dendro_data segment theme_dendro
+#' @importFrom stats as.dendrogram dist hclust
 #' @export
 tree_maker <- function(report, hc.only=NA){
   reportable.wide <- dcast(report, Sample ~ Plasmid, value.var="Sureness")
@@ -143,9 +162,13 @@ tree_maker <- function(report, hc.only=NA){
     scale_x_continuous(expand = c(0.001, 0)) +
     theme_dendro() +
     if(nlevels(report$Sample)<20){
-      theme(plot.margin = unit(c(0.0027*nlevels(report$Sample),0,0.0027*nlevels(report$Sample),0), "null"))  # Add some padding around the upper and lower edges of the tree. 0.0027 per sample
+      # Add some padding around the upper and lower edges of the tree. 0.0027 per sample
+      theme(plot.margin =
+              unit(c(0.0027*nlevels(report$Sample),0,0.0027*nlevels(report$Sample),0), "null"))
     }else{
-      theme(plot.margin = unit(c(0.00015*nlevels(report$Sample),0,0.00015*nlevels(report$Sample),0), "null"))  # Add some padding around the upper and lower edges of the tree. 0.0027 per sample
+      # Add some padding around the upper and lower edges of the tree. 0.0015 per sample
+      theme(plot.margin =
+              unit(c(0.00015*nlevels(report$Sample),0,0.00015*nlevels(report$Sample),0), "null"))
     }
   if (!is.na(hc.only)){
     reportable.hc
@@ -164,7 +187,9 @@ tree_maker <- function(report, hc.only=NA){
 #' @param anonymize Flag to anything other than NA to replace plasmid and sample names with generic names
 #' @return Ordered report
 #' @examples
+#' \dontrun{
 #' order_report(report)
+#' }
 #' @importFrom plyr mapvalues
 #' @importFrom dplyr arrange mutate group_by ungroup
 #' @importFrom magrittr %>%

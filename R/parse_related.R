@@ -28,8 +28,11 @@
 #' @param br.file System location of the blast file, no default.
 #' @return Dataframe of blast data with correct column headers.
 #' @examples
+#' \dontrun{
 #' read_blast("/data/blast_results.tsv")
+#' }
 #' @importFrom stringr str_extract str_split_fixed
+#' @importFrom utils read.table
 #' @export
 
 read_blast <- function(br.file){
@@ -72,7 +75,9 @@ read_blast <- function(br.file){
 #' @param blast.results Blast results loaded from read_blast
 #' @return Blast table with pID adjusted by ratio of hit length to query length (larger as denominator)
 #' @examples
+#' \dontrun{
 #' blast_parser(example_blast_results)
+#' }
 #' @export
 
 blast_parser <- function(blast.results){
@@ -101,13 +106,16 @@ blast_parser <- function(blast.results){
 
 #' Identify Antimicrobial Resistance Positive Plasmids from Blast Results
 #'
-#' This function loads the imported blast results, identifies which plasmids carry AMR genes at 100%
-#' identity. May have issues with multiple genes per plasmid, currently optimized for identifying one of two genes
+#' This function loads the imported blast results, identifies which plasmids
+#' carry AMR genes at 100% identity. May have issues with multiple genes per
+#' plasmid, currently optimized for identifying one of two genes
 #'
 #' @param blast.results Blast results loaded from read_blast
 #' @return Two column DF of plasmid names and genes present
 #' @examples
+#' \dontrun{
 #' amr_positives(example_blast_results)
+#' }
 #' @export
 
 amr_positives <- function(blast.results){
@@ -143,10 +151,13 @@ amr_positives <- function(blast.results){
 #'
 #' @param srst2.file System location of the srst2 file, no default.
 #' @return Dataframe of srst2 data with correct column headers.
+#' @importFrom utils read.delim
+#'
 #' @examples
+#' \dontrun{
 #' read_srst2("/data/srst2_results.tsv")
+#' }
 #' @export
-
 read_srst2 <- function(srst2.file){
   read.delim(srst2.file, sep="\t", stringsAsFactors = FALSE) # New data
 }
@@ -160,15 +171,38 @@ read_srst2 <- function(srst2.file){
 #' @param sr SRST2 results loaded from read_srst2
 #' @return Seven column dataframe of SRST2 results now including INC groups
 #' @examples
+#' \dontrun{
 #' combine_results(example_srst2_results, example_blast_results)
+#' }
 #' @export
 
 combine_results <- function(sr, br){
-  report <- sr[,c("Sample","gene","coverage","divergence","clusterid", "length")] # Create temp variable for reporting
-  report$plasmid <- as.character(br$qseqid[match(report$gene, br$sseqid)]) # Match plasmids to BR Inc Group and append to report
-  report$plasmid[is.na(report$plasmid)] <- "-" # Replace NAs (no Inc match) with None Found
-  report$plasmid <- str_split_fixed(report$plasmid,"_",3)[,1] # Simplify names of Inc groups (remove the sequence data)
-  colnames(report) <- c("Sample", "Plasmid", "Coverage", "Divergence", "Clusterid", "Length", "Inc_group")
-  report <- report[,c("Sample", "Plasmid", "Inc_group","Coverage", "Divergence", "Length", "Clusterid")]
+  # Create temp variable for reporting
+  report <- sr[,c("Sample",
+                  "gene",
+                  "coverage",
+                  "divergence",
+                  "clusterid",
+                  "length")]
+  # Match plasmids to BR Inc Group and append to report
+  report$plasmid <- as.character(br$qseqid[match(report$gene, br$sseqid)])
+  # Replace NAs (no Inc match) with Hyphen
+  report$plasmid[is.na(report$plasmid)] <- "-"
+  # Simplify names of Inc groups (remove the sequence data)
+  report$plasmid <- str_split_fixed(report$plasmid,"_",3)[,1]
+  colnames(report) <- c("Sample",
+                        "Plasmid",
+                        "Coverage",
+                        "Divergence",
+                        "Clusterid",
+                        "Length",
+                        "Inc_group")
+  report <- report[,c("Sample",
+                      "Plasmid",
+                      "Inc_group",
+                      "Coverage",
+                      "Divergence",
+                      "Length",
+                      "Clusterid")]
   report
 }

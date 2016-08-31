@@ -25,16 +25,24 @@
 #'
 #' Run all the interim functions to produce jpg, csv, and html outputs.
 #'
-#' @param blast.file System location of blast results (tsv)
-#' @param srst2.file System location of srst2 results (tsv)
+#' @param blast.file Either system location of blast results (tsv) or dataframe
+#' @param srst2.file Either system location of srst2 results (tsv) or dataframe
 #' @param coverage.filter Filters results below percent read coverage specified (eg. 80)
 #' @param sureness.filter Filters results below sureness specified (eg. 0.75)
 #' @param length.filter Filters plasmid sequences shorter than length specified (eg. 10000)
-#' @param combine.inc Flag to ombine incompatibility sub-groups into their main type (set to 1)
+#' @param combine.inc Flag to combine incompatibility sub-groups into their main type (set to 1)
+#' @param plotly.user Enter your plotly info to upload to (\href{https://plot.ly/feed/}{Plotly})
+#' @param plotly.api Enter your plotly info to upload to (\href{https://plot.ly/feed/}{Plotly})
+#' @param post.plotly Flag to post to (\href{https://plot.ly/feed/}{Plotly})
 #' @param main.title A title for the figure
 #' @return Saves output files in working directory
 #' @examples
-#' main("data/blast_results.tsv", "data/srst2_results.tsv", cov.filter=NA, sureness.filter=0.75, len.filter=10000, main.title="Example Results")
+#' main(blastdata,
+#' srst2data,
+#' coverage.filter=NA,
+#' sureness.filter=0.75,
+#' length.filter=10000,
+#' main.title="Example Results")
 #' @export
 main <- function(blast.file,
                  srst2.file,
@@ -47,37 +55,65 @@ main <- function(blast.file,
                  post.plotly=NA,
                  main.title="Plasmid Profiles") {
 
-  br <- read_blast(blast.file)
-  blast_results <- blast_parser(br)
-  PosSamples <- amr_positives(br)
-  sr <- read_srst2(srst2.file)
-  cr <- combine_results(sr, blast_results)
+  filename <<- paste("P2Run_", Sys.Date(), collapse="", sep="")
+
+  if (typeof(blast.file)=="character"){
+    blast.file <- read_blast(blast.file)
+  }
+
+  blast_results <- blast_parser(blast.file)
+  PosSamples <- amr_positives(blast.file)
+
+  if (typeof(srst2.file)=="character"){
+    srst2.file <- read_srst2(srst2.file)
+  }
+  cr <- combine_results(srst2.file, blast_results)
   report <- zetner_score(cr)
   report <- amr_presence(report, PosSamples)
-  report <- subsampler(report, cov.filter=coverage.filter, sure.filter=sureness.filter, len.filter=length.filter, inc.combine=combine.inc)
+  report <- subsampler(report,
+                       cov.filter=coverage.filter,
+                       sure.filter=sureness.filter,
+                       len.filter=length.filter,
+                       inc.combine=combine.inc)
   report <- order_report(report)
-  save_files(report, plot.jpg = 1, report.csv = 1, title = main.title)
-  create_plotly(report, user = plotly.user, api.key = plotly.api, post = post.plotly, title=main.title)
+  save_files(report,
+             plot.jpg = 1,
+             report.csv = 1,
+             title = main.title)
+  create_plotly(report,
+                user = plotly.user,
+                api.key = plotly.api,
+                post = post.plotly,
+                title=main.title)
   save_files(report, webpage = 1, title = main.title)
 }
 
 #' Save Files Produced
 #'
-#' This function uses RColorBrewer to produce palettes based on the factor levels of the identified column in a report.
+#' This function uses RColorBrewer to produce palettes based
+#' on the factor levels of the identified column in a report.
 #'
 #' @param report Dataframe of results
 #' @param plot.jpg Do you want to save a jpg? (Anything but NA)
 #' @param report.csv Do you want to save a text report? (Anything but NA)
 #' @param webpage Do you want to save an interactive heatmap as html? (Anything but NA)
+#' @param title Enter a title for the plot
 #' @return Named vector of colours, names are factor levels of column supplied
 #' @import ggplot2
 #' @import dplyr
-#' @import plotly
+#' @importFrom plotly ggplotly plotly_POST as.widget
 #' @importFrom htmlwidgets saveWidget
+#' @importFrom utils write.csv
 #' @examples
-#' save_files(report, plot.jpg=1, report.csv=1, webpage=NA)
+#' \dontrun{
+#'  save_files(report, plot.jpg=1, report.csv=1, webpage=NA)
+#' }
 #' @export
-save_files <- function(report, plot.jpg=NA, report.csv=NA, webpage=NA, title="Plasmid Profiles" ){
+save_files <- function(report,
+                       plot.jpg=NA,
+                       report.csv=NA,
+                       webpage=NA,
+                       title="Plasmid Profiles" ){
   if(!is.na(plot.jpg)){
     g <- create_grob(report, grob.title = title)
     ggsave(paste(filename, ".jpg", sep=""), g, device = "jpg", width = 12)
@@ -102,7 +138,9 @@ save_files <- function(report, plot.jpg=NA, report.csv=NA, webpage=NA, title="Pl
 #' @param x Vector of values
 #' @return Normalized vector of values
 #' @examples
-#' normalize(x)
+#' \dontrun{
+#'  normalize(x)
+#'  }
 #' @export
 normalize <- function(x){
   (x-min(x))/(max(x)-min(x))
@@ -110,7 +148,8 @@ normalize <- function(x){
 
 #' Minmax
 #'
-#' Takes two columns of numerical data, normalizes it to ranges from 0 to 1 (0 to -1 for minimums),
+#' Takes two columns of numerical data,
+#' normalizes it to ranges from 0 to 1 (0 to -1 for minimums),
 #' sums them, arranges by sum, then returns the sorted dataframe
 #'
 #' @param df Dataframe
@@ -119,7 +158,9 @@ normalize <- function(x){
 #' @return Dataframe sorted by sum of maxcol and mincol
 #' @importFrom dplyr arrange
 #' @examples
-#' minmax(df, maxcol, mincol)
+#' \dontrun{
+#'  minmax(df, maxcol, mincol)
+#'  }
 #' @export
 
 # returns the sorted dataframe

@@ -9,9 +9,9 @@ main(blast.file, srst2.file, coverage.filter = NA, sureness.filter = NA,
   post.plotly = NA, main.title = "Plasmid Profiles")
 }
 \arguments{
-\item{blast.file}{System location of blast results (tsv)}
+\item{blast.file}{Either system location of blast results (tsv) or dataframe}
 
-\item{srst2.file}{System location of srst2 results (tsv)}
+\item{srst2.file}{Either system location of srst2 results (tsv) or dataframe}
 
 \item{coverage.filter}{Filters results below percent read coverage specified (eg. 80)}
 
@@ -19,7 +19,13 @@ main(blast.file, srst2.file, coverage.filter = NA, sureness.filter = NA,
 
 \item{length.filter}{Filters plasmid sequences shorter than length specified (eg. 10000)}
 
-\item{combine.inc}{Flag to ombine incompatibility sub-groups into their main type (set to 1)}
+\item{combine.inc}{Flag to combine incompatibility sub-groups into their main type (set to 1)}
+
+\item{plotly.user}{Enter your plotly info to upload to (\href{https://plot.ly/feed/}{Plotly})}
+
+\item{plotly.api}{Enter your plotly info to upload to (\href{https://plot.ly/feed/}{Plotly})}
+
+\item{post.plotly}{Flag to post to (\href{https://plot.ly/feed/}{Plotly})}
 
 \item{main.title}{A title for the figure}
 }
@@ -30,6 +36,11 @@ Saves output files in working directory
 Run all the interim functions to produce jpg, csv, and html outputs.
 }
 \examples{
-main("data/blast_results.tsv", "data/srst2_results.tsv", cov.filter=NA, sureness.filter=0.75, len.filter=10000, main.title="Example Results")
+main(blastdata,
+srst2data,
+coverage.filter=NA,
+sureness.filter=0.75,
+length.filter=10000,
+main.title="Example Results")
 }
 

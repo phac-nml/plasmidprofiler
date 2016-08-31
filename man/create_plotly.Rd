@@ -28,6 +28,8 @@ plotly object
 Combines the tree, heatmap, and titles to create final heatmap image.
 }
 \examples{
+\dontrun{
 create_plotly(report, title="Outbreak Plasmid Profiles")
+}
 }
 

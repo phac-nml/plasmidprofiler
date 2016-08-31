@@ -16,6 +16,8 @@ Dataframe of srst2 data with correct column headers.
 This function imports the 14 column SRST2 file. Kind of superfluous
 }
 \examples{
+\dontrun{
 read_srst2("/data/srst2_results.tsv")
+}
 }
 

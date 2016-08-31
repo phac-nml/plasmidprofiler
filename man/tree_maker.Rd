@@ -7,20 +7,24 @@
 tree_maker(report, hc.only = NA)
 }
 \arguments{
-\item{report}{Dataframe of results produced by \code{\link{subsampler}} or \code{\link{combine_results}}}
+\item{report}{Dataframe of results produced
+by \code{\link{subsampler}} or \code{\link{combine_results}}}
 
-\item{hc.only}{Flag to return only hierarchical clustering results instead of dendrogram plot (set to 1)}
+\item{hc.only}{Flag to return only hierarchical clustering
+results instead of dendrogram plot (set to 1)}
 }
 \value{
 Dendrogram object or hierarchical clustering results
 }
 \description{
-Reads report, converts to matrix of Sample ~ Plasmid with Sureness as cell values. Performs a hierarchical cluster analysis
-on a set of dissimilarities derived from the matrix. Creates a dendrogram from this data. Returns either the HC data or
-the dendrogram plot
+Reads report, converts to matrix of Sample ~ Plasmid with Sureness as cell values.
+Performs a hierarchical cluster analysis on a set of dissimilarities derived from the matrix.
+Creates a dendrogram from this data. Returns either the HC data or the dendrogram plot
 }
 \examples{
+\dontrun{
 tree_maker(report)
+}
 }
 \seealso{
 \code{\link{subsampler}}, \code{\link{combine_results}}

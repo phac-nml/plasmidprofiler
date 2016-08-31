@@ -32,8 +32,11 @@
 #' @return Named vector of colours, names are factor levels of column supplied
 #' @importFrom viridis inferno
 #' @importFrom RColorBrewer brewer.pal
+#' @importFrom grDevices colorRampPalette
 #' @examples
+#' \dontrun{
 #' define_colours(report, "AMR_gene")
+#' }
 #' @export
 define_colours <- function(report, column){
   report[[column]] <- as.factor(report[[column]])
@@ -60,7 +63,9 @@ define_colours <- function(report, column){
 #' @importFrom magrittr %>%
 #'
 #' @examples
+#' \dontrun{
 #' plot_heatmap(report)
+#' }
 #' @export
 plot_heatmap <- function(report, len.highlight=NA){
 
@@ -117,11 +122,13 @@ plot_heatmap <- function(report, len.highlight=NA){
 #' @return Composite image
 #' @import ggplot2
 #' @import grid
-#' @import gridExtra
+#' @importFrom gridExtra arrangeGrob grid.arrange
 #' @import gtable
 #'
 #' @examples
-#' create_grob(report, title="Plasmid Profiles")
+#'
+#' create_grob(report, grob.title="Plasmid Profiles")
+#'
 #' @export
 create_grob <- function(report, grob.title="Plasmid Profiles"){
   pp <- plot_heatmap(report)
@@ -138,9 +145,10 @@ create_grob <- function(report, grob.title="Plasmid Profiles"){
   tree.gt$heights[4:5] <- as.list(maxHeight)
 
   # Create a new gtable
-  gt <- gtable(widths = unit(c(1,7), "null"), height = unit(c(7), "null"))
+  gt <- gtable(widths = unit(c(1,7), "null"), heights = unit(c(7), "null"))
   #gtable_show_layout(gt)
   title <- textGrob(grob.title, gp=gpar(fontsize=24))
+  if (!exists("filename")){filename <- "Profiles"}
   footnote <- textGrob(filename, x=0, hjust=0, gp=gpar(fontface="italic"))
 
   padding <- unit(0.5,"line")
@@ -174,12 +182,15 @@ create_grob <- function(report, grob.title="Plasmid Profiles"){
 #' @param title Title of heatmap
 #' @param len.highlight If anything but NA will highlight the largest plasmid hit per incompatibility group
 #' @return plotly object
-#' @import plotly
+#' @importFrom plotly ggplotly plotly_POST
+#' @importFrom graphics layout
 #' @import ggplot2
 #' @import dplyr
 #'
 #' @examples
+#' \dontrun{
 #' create_plotly(report, title="Outbreak Plasmid Profiles")
+#' }
 #' @export
 create_plotly <- function(report, user, api.key,  post=NA, title="Plasmid Profiles: Sureness, Incompatibility Group", len.highlight=NA){
 
@@ -244,12 +255,13 @@ create_plotly <- function(report, user, api.key,  post=NA, title="Plasmid Profil
 
   # Make ggplotly object
   ppp <- ggplotly(pp.noalpha, tooltip = c("y", "x", "text", "label", "fill")) %>%
-    layout(autosize = T, width = 1200, height = 1000, font = f, margin = m, xaxis=x, yaxis=y, title = title)
+    plotly::layout(autosize = T, width = 1200, height = 1000, font = f, margin = m, xaxis=x, yaxis=y, title = title)
 
   # Publish
   if(!is.na(post)){
     Sys.setenv("plotly_username"=user)
     Sys.setenv("plotly_api_key"=api.key)
+    if (!exists("filename")){filename <- "Profiles"}
     plotly_POST(ppp, filename)
   }
   ppp
