@@ -6,7 +6,7 @@ Author: person("Adrian", "Zetner", email = "adrian.zetner@phac-aspc.gc.ca", role
 Maintainer: Who to complain to <adrian.zetner@phac-aspc.gc.ca>
 Description: Contains functions developed to combine the results of querying a plasmid database using
     short-read sequence typing with the results of a blast analysis against those results.
-License: GPL-3
+License: Apache License 2.0
 LazyData: TRUE
 RoxygenNote: 5.0.1
 Imports:
