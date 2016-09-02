@@ -19,9 +19,11 @@ test:
     - echo '.gitlab-ci.yml' > .Rbuildignore
     - Rscript -e 'if(!"devtools" %in% rownames(installed.packages())) { install.packages("devtools", dependencies = TRUE) }'
     - Rscript -e 'if(!"covr" %in% rownames(installed.packages())) { install.packages("covr", dependencies = TRUE) }'
+    - Rscript -e 'if(!"lintr" %in% rownames(installed.packages())) { install.packages("lintr", dependencies = TRUE) }'
     - Rscript -e 'update.packages(ask = FALSE, instlib = "~/Rlib")'
     - Rscript -e 'devtools::install_deps(pkg = ".", dependencies = TRUE)'
   script:
     - R CMD build . --no-build-vignettes --no-manual
     - PKG_FILE_NAME=$(ls -1t *.tar.gz | head -n 1)
     - R CMD check "${PKG_FILE_NAME}" --no-build-vignettes --no-manual --as-cran
+    - R CMD lint "${PKG_FILE_NAME}"

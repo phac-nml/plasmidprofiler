@@ -87,7 +87,7 @@ plot_heatmap <- function(report, len.highlight=NA){
           #axis.title.x=element_blank(),
           legend.title = element_text(),
           #axis.title.y=element_blank(),
-          panel.background = element_rect(fill="grey95")) +
+          panel.background = element_rect(fill = "grey95")) +
     scale_x_discrete(expand = c(0, 0)) +
     scale_y_discrete(expand = c(0, 0))
 
@@ -97,7 +97,7 @@ plot_heatmap <- function(report, len.highlight=NA){
   colours.amr2 <- report$Colours2[match(levels(report$Plasmid), report$Plasmid)]
 
   pp <- pp + theme(axis.text.x = element_text(colour = colours.amr2)) +
-    geom_text(aes(label="", colour=AMR_gene)) +
+    geom_text(aes(label = "", colour = AMR_gene)) +
     scale_colour_manual(values = colours.amr, name = "Resistance Gene")
 
   if (!is.na(len.highlight)){

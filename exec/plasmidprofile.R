@@ -1,5 +1,6 @@
 #' RScript capable
-#'
+#' Rscript plasmidprofile.R -b blast_runG.tsv -s srst2_runG.tsv -u 0.75 -l 10000 -t "This is a test" -a
+
 
 suppressPackageStartupMessages(library("optparse"))
 suppressPackageStartupMessages(library("Plasmidprofiler"))
