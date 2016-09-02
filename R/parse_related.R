@@ -76,7 +76,7 @@ read_blast <- function(br.file){
 #' @return Blast table with pID adjusted by ratio of hit length to query length (larger as denominator)
 #' @examples
 #' \dontrun{
-#' blast_parser(example_blast_results)
+#' blast_parser(blastdata)
 #' }
 #' @export
 
@@ -107,14 +107,14 @@ blast_parser <- function(blast.results){
 #' Identify Antimicrobial Resistance Positive Plasmids from Blast Results
 #'
 #' This function loads the imported blast results, identifies which plasmids
-#' carry AMR genes at 100% identity. May have issues with multiple genes per
+#' carry AMR genes at 100\% identity. May have issues with multiple genes per
 #' plasmid, currently optimized for identifying one of two genes
 #'
 #' @param blast.results Blast results loaded from read_blast
 #' @return Two column DF of plasmid names and genes present
 #' @examples
 #' \dontrun{
-#' amr_positives(example_blast_results)
+#' amr_positives(blastdata)
 #' }
 #' @export
 
@@ -162,7 +162,7 @@ read_srst2 <- function(srst2.file){
   read.delim(srst2.file, sep="\t", stringsAsFactors = FALSE) # New data
 }
 
-#' Combines SRST2 and Blast results into a single DF
+#' Combines SRST2 and Blast results into a single dataframe
 #'
 #' Cuts to desired columns, matches plasmids to BR and appends simplified INC names,
 #' all future modifications are done to this dataframe

@@ -18,7 +18,7 @@ length to query length - higher as denominator, adjusts pID by this ratio. Any A
 }
 \examples{
 \dontrun{
-blast_parser(example_blast_results)
+blast_parser(blastdata)
 }
 }
 

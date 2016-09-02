@@ -2,7 +2,7 @@
 % Please edit documentation in R/parse_related.R
 \name{combine_results}
 \alias{combine_results}
-\title{Combines SRST2 and Blast results into a single DF}
+\title{Combines SRST2 and Blast results into a single dataframe}
 \usage{
 combine_results(sr, br)
 }

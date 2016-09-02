@@ -20,8 +20,7 @@
 #
 #  =============================================================================
 
-
-#' Run everything
+#' Main: Run everything
 #'
 #' Run all the interim functions to produce jpg, csv, and html outputs.
 #'
@@ -34,6 +33,7 @@
 #' @param plotly.user Enter your plotly info to upload to (\href{https://plot.ly/feed/}{Plotly})
 #' @param plotly.api Enter your plotly info to upload to (\href{https://plot.ly/feed/}{Plotly})
 #' @param post.plotly Flag to post to (\href{https://plot.ly/feed/}{Plotly})
+#' @param anonymize Flag to post to anonymize plasmids and samples (set to 1)
 #' @param main.title A title for the figure
 #' @return Saves output files in working directory
 #' @examples
@@ -53,6 +53,7 @@ main <- function(blast.file,
                  plotly.user,
                  plotly.api,
                  post.plotly=NA,
+                 anonymize=NA,
                  main.title="Plasmid Profiles") {
 
   filename <<- paste("P2Run_", Sys.Date(), collapse="", sep="")
@@ -75,7 +76,7 @@ main <- function(blast.file,
                        sure.filter=sureness.filter,
                        len.filter=length.filter,
                        inc.combine=combine.inc)
-  report <- order_report(report)
+  report <- order_report(report, anonymize)
   save_files(report,
              plot.jpg = 1,
              report.csv = 1,

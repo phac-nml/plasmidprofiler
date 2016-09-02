@@ -2,11 +2,11 @@
 % Please edit documentation in R/main_aux.R
 \name{main}
 \alias{main}
-\title{Run everything}
+\title{Main: Run everything}
 \usage{
 main(blast.file, srst2.file, coverage.filter = NA, sureness.filter = NA,
   length.filter = NA, combine.inc = NA, plotly.user, plotly.api,
-  post.plotly = NA, main.title = "Plasmid Profiles")
+  post.plotly = NA, anonymize = NA, main.title = "Plasmid Profiles")
 }
 \arguments{
 \item{blast.file}{Either system location of blast results (tsv) or dataframe}
@@ -26,6 +26,8 @@ main(blast.file, srst2.file, coverage.filter = NA, sureness.filter = NA,
 \item{plotly.api}{Enter your plotly info to upload to (\href{https://plot.ly/feed/}{Plotly})}
 
 \item{post.plotly}{Flag to post to (\href{https://plot.ly/feed/}{Plotly})}
+
+\item{anonymize}{Flag to post to anonymize plasmids and samples (set to 1)}
 
 \item{main.title}{A title for the figure}
 }
