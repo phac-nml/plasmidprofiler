@@ -40,7 +40,7 @@ zetner_score <- function(report){
   report <- arrange(report, Sample)
   report$mmsum <- normalize(report$mmsum) # Improves final HM
   report <- ungroup(report)
-  plyr::rename(report, c(mmsum="Sureness"))
+  plyr::rename(report, c(mmsum = "Sureness"))
 }
 
 
@@ -62,7 +62,8 @@ zetner_score <- function(report){
 #' @export
 amr_presence <- function(report, pos.samples){
   # Mark plasmids with AMR present and type
-  report$AMR_gene <- as.character(pos.samples$Gene[match(report$Plasmid, pos.samples$Plasmid)])
+  report$AMR_gene <- as.character(pos.samples$Gene[match(report$Plasmid,
+                                                         pos.samples$Plasmid)])
   report$AMR_gene[is.na(report$AMR_gene)] <- "-"
   report
 }
@@ -94,25 +95,29 @@ amr_presence <- function(report, pos.samples){
 #' subsampler(report, sureness.filter = 0.75, len.filter = 10000)
 #' }
 #' @export
-subsampler <- function(report, cov.filter=NA, sure.filter=NA, len.filter=NA, inc.combine=NA){
+subsampler <- function(report,
+                       cov.filter = NA,
+                       sure.filter = NA,
+                       len.filter = NA,
+                       inc.combine = NA){
 
   if (!is.na(cov.filter)){
-    filename <<- paste(filename, "_cov", cov.filter, sep="")
-    report <- report[report$Coverage > cov.filter,]
+    filename <<- paste(filename, "_cov", cov.filter, sep = "")
+    report <- report[report$Coverage > cov.filter, ]
   }
   if (!is.na(sure.filter)){
-    filename <<- paste(filename, "_sure", sure.filter, sep="")
-    report <- report[report$Sureness > sure.filter,]
+    filename <<- paste(filename, "_sure", sure.filter, sep = "")
+    report <- report[report$Sureness > sure.filter, ]
   }
   if (!is.na(len.filter)){
-    filename <<- paste(filename, "_len", len.filter, sep="")
-    report <- report[report$Length > len.filter,]
+    filename <<- paste(filename, "_len", len.filter, sep = "")
+    report <- report[report$Length > len.filter, ]
   }
   if (!is.na(inc.combine)){
     # Simplify names of Inc groups (remove the subsetting)
-    report$Inc_group <- str_split_fixed(report$Inc_group, '\\(', 2)[,1]
+    report$Inc_group <- str_split_fixed(report$Inc_group, "\\(", 2)[, 1]
     # Replace all individual Col-type plasmids with just Col
-    report$Inc_group[grep('Col', report$Inc_group)] <- 'Col'
+    report$Inc_group[grep("Col", report$Inc_group)] <- "Col"
   }
   drop.levels(report)
 }
@@ -141,19 +146,19 @@ subsampler <- function(report, cov.filter=NA, sure.filter=NA, len.filter=NA, inc
 #' @importFrom ggdendro dendro_data segment theme_dendro
 #' @importFrom stats as.dendrogram dist hclust
 #' @export
-tree_maker <- function(report, hc.only=NA){
-  reportable.wide <- dcast(report, Sample ~ Plasmid, value.var="Sureness")
+tree_maker <- function(report, hc.only = NA){
+  reportable.wide <- dcast(report, Sample ~ Plasmid, value.var = "Sureness")
   reportable.wide[is.na(reportable.wide)] <- 0
 
   # Put results into matrix format for HM generation
-  reportable.matrix <- data.matrix(reportable.wide[,2:ncol(reportable.wide)])
+  reportable.matrix <- data.matrix(reportable.wide[, 2:ncol(reportable.wide)])
   # Use sample names from col 1 of DCW for rownames in matrix
-  rnames <- reportable.wide[,1]
+  rnames <- reportable.wide[, 1]
   rownames (reportable.matrix) <- rnames
 
 
   reportable.hc <- hclust(dist(reportable.matrix))
-  reportable.phylo <- as.phylo(reportable.hc)
+
   tree.data <- dendro_data(as.dendrogram(reportable.hc), type = "rectangle")
   tree <- ggplot(segment(tree.data)) +
     geom_segment(aes(x = x, y = y, xend = xend, yend = yend)) +
@@ -161,14 +166,23 @@ tree_maker <- function(report, hc.only=NA){
     scale_y_reverse(expand = c(0, 0)) +
     scale_x_continuous(expand = c(0.001, 0)) +
     theme_dendro() +
-    if(nlevels(report$Sample)<20){
-      # Add some padding around the upper and lower edges of the tree. 0.0027 per sample
+    if (nlevels(report$Sample) < 20){
+      # Add some padding around the upper and lower edges of the tree.
+      # 0.0027 per sample
       theme(plot.margin =
-              unit(c(0.0027*nlevels(report$Sample),0,0.0027*nlevels(report$Sample),0), "null"))
+              unit(c(0.0027 * nlevels(report$Sample),
+                     0,
+                     0.0027 * nlevels(report$Sample),
+                     0),
+                   "null"))
     }else{
-      # Add some padding around the upper and lower edges of the tree. 0.0015 per sample
-      theme(plot.margin =
-              unit(c(0.00015*nlevels(report$Sample),0,0.00015*nlevels(report$Sample),0), "null"))
+      # Add some padding around the upper and lower edges of the tree.
+      # 0.0015 per sample
+      theme(plot.margin = unit(c(0.00015 * nlevels(report$Sample),
+                                 0,
+                                 0.00015 * nlevels(report$Sample),
+                                 0),
+                               "null"))
     }
   if (!is.na(hc.only)){
     reportable.hc
@@ -199,25 +213,37 @@ order_report <- function(report, anonymize = NA){
   reportable.hc <- tree_maker(report, hc.only = 1)
   reportable.phylo <- as.phylo(reportable.hc)
 
-  report$Sample <- ordered(report$Sample, levels = reportable.phylo$tip.label[reportable.hc$order]) # First order Samples based on HC / Phylo
+  # First order Samples based on HC / Phylo
+  report$Sample <- ordered(report$Sample,
+                    levels = reportable.phylo$tip.label[reportable.hc$order])
 
-  report <- report %>% group_by(Plasmid) %>% mutate(average = mean(Sureness))
+  report <- report %>%
+    group_by(Plasmid) %>%
+    mutate(average = mean(Sureness))
 
-  report <- ungroup(report) # Not always necessary, decide if needed
+  report <- ungroup(report)
 
-  report <- arrange(report, Inc_group, average) # Arrange by Inc_group then average Sureness
+  # Arrange by Inc_group then average Sureness
+  report <- arrange(report, Inc_group, average)
 
-  report$Plasmid <- ordered(report$Plasmid, levels = unique(report$Plasmid)) # Order the Plasmids based on order of appearance (ie. by inc group)
+  # Order the Plasmids based on order of appearance (ie. by inc group)
+  report$Plasmid <- ordered(report$Plasmid,
+                            levels = unique(report$Plasmid))
 
   report$Inc_group <- as.factor(report$Inc_group)
   report$AMR_gene <- as.factor(report$AMR_gene)
 
   if (!is.na(anonymize)){
-    report$Sample <- mapvalues(report$Sample, from = levels(report$Sample), to = paste("Sample",1:length(levels(report$Sample))))
-    report$Plasmid <- mapvalues(report$Plasmid, from = levels(report$Plasmid), to = paste("Plasmid",1:length(levels(report$Plasmid))))
-    filename <- paste(filename, "_anon", sep="")
+    report$Sample <- mapvalues(report$Sample,
+                               from = levels(report$Sample),
+                               to = paste("Sample",
+                                          1:length(levels(report$Sample))))
+    report$Plasmid <- mapvalues(report$Plasmid,
+                                from = levels(report$Plasmid),
+                                to = paste("Plasmid",
+                                           1:length(levels(report$Plasmid))))
+    filename <- paste(filename, "_anon", sep = "")
   }
 
   subset(report, select = -c(average))
 }
-

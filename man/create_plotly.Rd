@@ -4,8 +4,7 @@
 \alias{create_plotly}
 \title{Create Plotly Object}
 \usage{
-create_plotly(report, user, api.key, post = NA,
-  title = "Plasmid Profiles: Sureness, Incompatibility Group",
+create_plotly(report, user, api.key, post = NA, title = "Plasmid Profiles",
   len.highlight = NA)
 }
 \arguments{

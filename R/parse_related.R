@@ -37,7 +37,7 @@
 
 read_blast <- function(br.file){
   # Define column names, import blast output tabular file
-  blast_cols<-c("qseqid",
+  blast_cols <- c("qseqid",
                 "sseqid",
                 "pident",
                 "length",
@@ -62,8 +62,7 @@ read_blast <- function(br.file){
                 "qlen",
                 "slen",
                 "salltitles")
-  filename <<- paste(str_split_fixed(str_split_fixed(str_extract(br.file, "blast.*"), '\\.', 2)[1], '_',2)[2], "_P2run", Sys.Date(), sep="")
-  read.table(br.file, sep="\t", col.names=blast_cols)
+  read.table(br.file, sep = "\t", col.names = blast_cols)
 }
 
 
@@ -82,24 +81,27 @@ read_blast <- function(br.file){
 
 blast_parser <- function(blast.results){
 
-  ADJblastresults<-blast.results[,c(1:4,23,24)] #pull first 4 and 23/24 columns (qseqid, sseqid, pident, length, qlen, slen)
-  # Create new column of ratio between hit length to query length (higher as denominator), use to adjust pID
-  for (i in 1:nrow(ADJblastresults)){
-    if (ADJblastresults$length[i]<=ADJblastresults$qlen[i]){
-      ADJblastresults$ratio[i] <- ADJblastresults$length[i]/ADJblastresults$qlen[i]
-    }else{ #if (ADJblastresults$length[i]>ADJblastresults$qlen[i]){
-      ADJblastresults$ratio[i] <- ADJblastresults$qlen[i]/ADJblastresults$length[i]
+  #pull first 4 and 23/24 columns (qseqid, sseqid, pident, length, qlen, slen)
+  adj.br <- blast.results[, c(1:4, 23, 24)]
+  # Create new column of ratio between hit length to query length
+  # (higher as denominator), use to adjust pID
+  for (i in 1:nrow(adj.br)){
+    if (adj.br$length[i] <= adj.br$qlen[i]){
+      adj.br$ratio[i] <- adj.br$length[i] / adj.br$qlen[i]
+    }else{
+      adj.br$ratio[i] <- adj.br$qlen[i] / adj.br$length[i]
     }
   }
 
-  ADJblastresults$ADJpID <- ADJblastresults$pident*ADJblastresults$ratio #multiply percent ID by ratio and format properly
-  ADJblastresults$ADJpID<-format(ADJblastresults$ADJpID, digits=3)
-  ADJblastresults$ratio<-format(ADJblastresults$ratio, digits=3)
-  ADJblastresults$ADJpID<-as.numeric(ADJblastresults$ADJpID)
-  if (length(grep("AMR", ADJblastresults$qseqid))>0){
-    ADJblastresults[-grep("(AMR)", ADJblastresults$qseqid),]
+  #multiply percent ID by ratio and format properly
+  adj.br$ADJpID <- adj.br$pident * adj.br$ratio
+  adj.br$ADJpID <- format(adj.br$ADJpID, digits = 3)
+  adj.br$ratio <- format(adj.br$ratio, digits = 3)
+  adj.br$ADJpID <- as.numeric(adj.br$ADJpID)
+  if (length(grep("AMR", adj.br$qseqid)) > 0){
+    adj.br[-grep("(AMR)", adj.br$qseqid), ]
   }else{
-    ADJblastresults
+    adj.br
   }
 
 }
@@ -120,29 +122,34 @@ blast_parser <- function(blast.results){
 
 amr_positives <- function(blast.results){
 
-  # Find all AMR positives, select perfect matches only, append to PosSamples
-  PosSamples <- data.frame(Plasmid=character(), Gene=character(), row.names = NULL, stringsAsFactors = FALSE)
+  # Find all AMR positives, select perfect matches only, append to pos.samples
+  pos.samples <- data.frame(Plasmid = character(),
+                            Gene = character(),
+                            row.names = NULL,
+                            stringsAsFactors = FALSE)
   ii <- 1
-  blast.results <- blast.results[grep("(AMR)",blast.results$qseqid),]
+  blast.results <- blast.results[grep("(AMR)", blast.results$qseqid), ]
   blast.results$qseqid <- as.character(blast.results$qseqid)
 
-  if (length(grep("AMR", blast.results$qseqid))>0){
-    for(i in 1:nrow(blast.results)){
-      if(blast.results[i,3]==100){
-        splt <- strsplit(blast.results[i,1], split = ")")[[1]][2]
+  if (length(grep("AMR", blast.results$qseqid)) > 0){
+    for (i in 1:nrow(blast.results)){
+      if (blast.results[i, 3] == 100){
+        splt <- strsplit(blast.results[i, 1], split = ")")[[1]][2]
         splt <- strsplit(splt, split = "_")[[1]][1]
-        PosSamples[ii, 1] <- as.character(blast.results[i,2])
-        PosSamples[ii, "Gene"] <- splt
+        pos.samples[ii, 1] <- as.character(blast.results[i, 2])
+        pos.samples[ii, "Gene"] <- splt
         ii <- ii + 1
       }
     }
-    PosSamples <- unique(PosSamples)
-    PosSamples[,1] <- as.factor(PosSamples[,1])
-    PosSamples[,2] <- as.factor(PosSamples[,2])
+    pos.samples <- unique(pos.samples)
+    pos.samples[, 1] <- as.factor(pos.samples[, 1])
+    pos.samples[, 2] <- as.factor(pos.samples[, 2])
 
-  }else { print("No match to AMR genes in DB")}
+  }else {
+    print("No match to AMR genes in DB")
+    }
 
-  PosSamples
+  pos.samples
 }
 
 #' SRST2 file import function
@@ -159,7 +166,7 @@ amr_positives <- function(blast.results){
 #' }
 #' @export
 read_srst2 <- function(srst2.file){
-  read.delim(srst2.file, sep="\t", stringsAsFactors = FALSE) # New data
+  read.delim(srst2.file, sep = "\t", stringsAsFactors = FALSE) # New data
 }
 
 #' Combines SRST2 and Blast results into a single dataframe
@@ -178,7 +185,7 @@ read_srst2 <- function(srst2.file){
 
 combine_results <- function(sr, br){
   # Create temp variable for reporting
-  report <- sr[,c("Sample",
+  report <- sr[, c("Sample",
                   "gene",
                   "coverage",
                   "divergence",
@@ -189,7 +196,7 @@ combine_results <- function(sr, br){
   # Replace NAs (no Inc match) with Hyphen
   report$plasmid[is.na(report$plasmid)] <- "-"
   # Simplify names of Inc groups (remove the sequence data)
-  report$plasmid <- str_split_fixed(report$plasmid,"_",3)[,1]
+  report$plasmid <- str_split_fixed(report$plasmid, "_", 3)[, 1]
   colnames(report) <- c("Sample",
                         "Plasmid",
                         "Coverage",
@@ -197,7 +204,7 @@ combine_results <- function(sr, br){
                         "Clusterid",
                         "Length",
                         "Inc_group")
-  report <- report[,c("Sample",
+  report <- report[, c("Sample",
                       "Plasmid",
                       "Inc_group",
                       "Coverage",

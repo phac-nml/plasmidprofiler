@@ -56,26 +56,26 @@ main <- function(blast.file,
                  anonymize=NA,
                  main.title="Plasmid Profiles") {
 
-  filename <<- paste("P2Run_", Sys.Date(), collapse="", sep="")
+  filename <<- paste("P2Run_", Sys.Date(), collapse = "", sep = "")
 
-  if (typeof(blast.file)=="character"){
+  if (typeof(blast.file) == "character"){
     blast.file <- read_blast(blast.file)
   }
 
   blast_results <- blast_parser(blast.file)
-  PosSamples <- amr_positives(blast.file)
+  pos.samples <- amr_positives(blast.file)
 
-  if (typeof(srst2.file)=="character"){
+  if (typeof(srst2.file) == "character"){
     srst2.file <- read_srst2(srst2.file)
   }
   cr <- combine_results(srst2.file, blast_results)
   report <- zetner_score(cr)
-  report <- amr_presence(report, PosSamples)
+  report <- amr_presence(report, pos.samples)
   report <- subsampler(report,
-                       cov.filter=coverage.filter,
-                       sure.filter=sureness.filter,
-                       len.filter=length.filter,
-                       inc.combine=combine.inc)
+                       cov.filter = coverage.filter,
+                       sure.filter = sureness.filter,
+                       len.filter = length.filter,
+                       inc.combine = combine.inc)
   report <- order_report(report, anonymize)
   save_files(report,
              plot.jpg = 1,
@@ -85,7 +85,7 @@ main <- function(blast.file,
                 user = plotly.user,
                 api.key = plotly.api,
                 post = post.plotly,
-                title=main.title)
+                title = main.title)
   save_files(report, webpage = 1, title = main.title)
 }
 
@@ -111,24 +111,24 @@ main <- function(blast.file,
 #' }
 #' @export
 save_files <- function(report,
-                       plot.jpg=NA,
-                       report.csv=NA,
-                       webpage=NA,
-                       title="Plasmid Profiles" ){
-  if(!is.na(plot.jpg)){
+                       plot.jpg = NA,
+                       report.csv = NA,
+                       webpage = NA,
+                       title = "Plasmid Profiles" ){
+  if (!is.na(plot.jpg)){
     g <- create_grob(report, grob.title = title)
-    ggsave(paste(filename, ".jpg", sep=""), g, device = "jpg", width = 12)
+    ggsave(paste(filename, ".jpg", sep = ""), g, device = "jpg", width = 12)
   }
 
-  if(!is.na(report.csv)){
+  if (!is.na(report.csv)){
     report <- arrange(report, Sample, Inc_group, desc(Sureness))
-    write.csv(report[,c(1:9)], paste(filename, ".csv", sep = ""))
+    write.csv(report[, c(1:9)], paste(filename, ".csv", sep = ""))
   }
 
   # Write offline HTML object
-  if(!is.na(webpage)){
+  if (!is.na(webpage)){
     ppp <- create_plotly(report)
-    htmlwidgets::saveWidget(as.widget(ppp), paste(filename, ".html", sep=""))
+    htmlwidgets::saveWidget(as.widget(ppp), paste(filename, ".html", sep = ""))
   }
 }
 
@@ -144,7 +144,7 @@ save_files <- function(report,
 #'  }
 #' @export
 normalize <- function(x){
-  (x-min(x))/(max(x)-min(x))
+  (x - min(x)) / (max(x) - min(x))
 }
 
 #' Minmax
@@ -165,11 +165,11 @@ normalize <- function(x){
 #' @export
 
 # returns the sorted dataframe
-minmax <- function(df,maxcol,mincol){
-  mincolnorm <- -normalize(df[,mincol])
-  maxcolnorm <- normalize(df[,maxcol])
+minmax <- function(df, maxcol, mincol){
+  mincolnorm <- -normalize(df[, mincol])
+  maxcolnorm <- normalize(df[, maxcol])
   mmsum <- maxcolnorm + mincolnorm
   df$mmsum <- mmsum
-  df <- arrange(df,desc(mmsum))
+  df <- arrange(df, desc(mmsum))
   df
 }

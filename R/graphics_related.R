@@ -40,12 +40,13 @@
 #' @export
 define_colours <- function(report, column){
   report[[column]] <- as.factor(report[[column]])
+  levs <- levels(report[[column]])
   if (column == "AMR_gene"){
-    colours <- colorRampPalette(inferno(20, end = 0.7))(length(levels(report[[column]])))
+    colours <- colorRampPalette(inferno(20, end = 0.7))(length(levs))
   }else{
-    colours <- colorRampPalette(brewer.pal(9, "Set1"))(length(levels(report[[column]])))
+    colours <- colorRampPalette(brewer.pal(9, "Set1"))(length(levs))
   }
-  names(colours) <- levels(report[[column]])
+  names(colours) <- levs
   colours
 }
 
@@ -78,11 +79,20 @@ plot_heatmap <- function(report, len.highlight=NA){
 
   font.size <-  0.9 - 0.001 * length(levels(report$Plasmid))
 
-  pp <- ggplot(report, aes(Plasmid, Sample, alpha = Sureness, fill = Inc_group, text = paste("AMR Gene: ", report$AMR_gene))) +
+  pp <- ggplot(report, aes(Plasmid,
+                           Sample,
+                           alpha = Sureness,
+                           fill = Inc_group,
+                           text = paste("AMR Gene: ",
+                                        report$AMR_gene))
+               ) +
     geom_tile(colour = "white") +
     scale_fill_manual(values = colours.inc, name = "Incompatibility Group") +
     theme_classic(base_size = 8) +
-    theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.45, size = rel(font.size)),
+    theme(axis.text.x = element_text(angle = 90,
+                                     hjust = 1,
+                                     vjust = 0.45,
+                                     size = rel(font.size)),
           axis.text.y = element_text(size = rel(0.8)),
           #axis.title.x=element_blank(),
           legend.title = element_text(),
@@ -93,22 +103,29 @@ plot_heatmap <- function(report, len.highlight=NA){
 
   #Add colours based on AMR for plasmid names
 
-  report$Colours2 <- colours.amr[match(report$AMR_gene, levels(report$AMR_gene))]
-  colours.amr2 <- report$Colours2[match(levels(report$Plasmid), report$Plasmid)]
+  report$Colours2 <- colours.amr[match(report$AMR_gene,
+                                       levels(report$AMR_gene))]
+  colours.amr2 <- report$Colours2[match(levels(report$Plasmid),
+                                        report$Plasmid)]
 
   pp <- pp + theme(axis.text.x = element_text(colour = colours.amr2)) +
     geom_text(aes(label = "", colour = AMR_gene)) +
     scale_colour_manual(values = colours.amr, name = "Resistance Gene")
 
   if (!is.na(len.highlight)){
-    seq.lengths <- report[report$Inc_group != "-",] %>%
+    seq.lengths <- report[report$Inc_group != "-", ] %>%
       group_by(Sample, Inc_group) %>%
-      filter(Coverage>=99) %>%
+      filter(Coverage >= 99) %>%
       arrange(Sample, Inc_group, desc(Length)) %>%
       slice(c(1))
     seq.lengths$maxed <- "Attention"
-    report <- full_join(seq.lengths, report, by=colnames(report))
-    pp <- pp + geom_point(aes(x=Plasmid, y=Sample), seq.lengths[,1:2], inherit.aes = F, alpha = 0.5, size = 0.5)
+    report <- full_join(seq.lengths, report, by = colnames(report))
+    pp <- pp + geom_point(aes(x = Plasmid, y = Sample),
+                          seq.lengths[, 1:2],
+                          inherit.aes = F,
+                          alpha = 0.5,
+                          size = 0.5
+                          )
   }
   pp
 }
@@ -130,7 +147,7 @@ plot_heatmap <- function(report, len.highlight=NA){
 #' create_grob(report, grob.title="Plasmid Profiles")
 #'
 #' @export
-create_grob <- function(report, grob.title="Plasmid Profiles"){
+create_grob <- function(report, grob.title = "Plasmid Profiles"){
   pp <- plot_heatmap(report)
   tree <- tree_maker(report)
   # Build a graphical property table of the plot / tree
@@ -138,29 +155,41 @@ create_grob <- function(report, grob.title="Plasmid Profiles"){
   tree.gt <- ggplot_gtable(ggplot_build(tree))
 
   # Get maximum widths and heights
-  maxHeight <- unit.pmax(pp.gt$heights[4:5], tree.gt$heights[4:5])
+  max.height <- unit.pmax(pp.gt$heights[4:5], tree.gt$heights[4:5])
 
   # Set the maximums in the gtables for tree and pp
-  pp.gt$heights[4:5] <- as.list(maxHeight)
-  tree.gt$heights[4:5] <- as.list(maxHeight)
+  pp.gt$heights[4:5] <- as.list(max.height)
+  tree.gt$heights[4:5] <- as.list(max.height)
 
   # Create a new gtable
-  gt <- gtable(widths = unit(c(1,7), "null"), heights = unit(c(7), "null"))
-  #gtable_show_layout(gt)
-  title <- textGrob(grob.title, gp=gpar(fontsize=24))
-  if (!exists("filename")){filename <- "Profiles"}
-  footnote <- textGrob(filename, x=0, hjust=0, gp=gpar(fontface="italic"))
+  gt <- gtable(widths = unit(c(1, 7), "null"), heights = unit(c(7), "null"))
 
-  padding <- unit(0.5,"line")
+  title <- textGrob(grob.title, gp = gpar(fontsize = 24))
+  if (!exists("filename")){
+    filename <- "Profiles"
+    }
+  footnote <- textGrob(filename,
+                       x = 0,
+                       hjust = 0,
+                       gp = gpar(fontface = "italic"))
+
+  padding <- unit(0.5, "line")
 
   # Insert tree and heatmap into the new gtable
   gt <- gtable_add_grob(gt, tree.gt, 1, 1) # Dend
-  gt <- gtable_add_grob(gt, pp.gt, t = 1, l=ncol(gt), b=1, r=ncol(gt)) # Heatmap
+  gt <- gtable_add_grob(gt,
+                        pp.gt,
+                        t = 1,
+                        l = ncol(gt),
+                        b = 1,
+                        r = ncol(gt)) # Heatmap
 
   # Rows for the title / footnote
   gt <- gtable_add_rows(gt, heights = grobHeight(title) + padding, pos = 0)
-  gt <- gtable_add_rows(gt, heights = grobHeight(footnote)+ padding)
-  gt <- gtable_add_grob(gt, list(title, footnote), t=c(1, nrow(gt)), l=c(1,2), r=ncol(gt))
+  gt <- gtable_add_rows(gt, heights = grobHeight(footnote) + padding)
+  gt <- gtable_add_grob(gt,
+                        list(title, footnote),
+                        t = c(1, nrow(gt)), l = c(1, 2), r = ncol(gt))
 
   # And render the plot
   grid.newpage()
@@ -192,52 +221,85 @@ create_grob <- function(report, grob.title="Plasmid Profiles"){
 #' create_plotly(report, title="Outbreak Plasmid Profiles")
 #' }
 #' @export
-create_plotly <- function(report, user, api.key,  post=NA, title="Plasmid Profiles: Sureness, Incompatibility Group", len.highlight=NA){
+create_plotly <- function(report,
+                          user,
+                          api.key,
+                          post=NA,
+                          title="Plasmid Profiles",
+                          len.highlight=NA){
 
   colours.amr <- define_colours(report, "AMR_gene")
   colours.inc <- define_colours(report, "Inc_group")
-  report$Colours2 <- colours.amr[match(report$AMR_gene, levels(report$AMR_gene))]
-  colours.amr2 <- report$Colours2[match(levels(report$Plasmid), report$Plasmid)]
+  report$Colours2 <- colours.amr[match(report$AMR_gene,
+                                       levels(report$AMR_gene))]
+  colours.amr2 <- report$Colours2[match(levels(report$Plasmid),
+                                        report$Plasmid)]
 
-  pp.noalpha <- ggplot(report, aes(Plasmid, Sample, label = AMR_gene, fill = Inc_group, text = paste("Sureness: ", round(report$Sureness, 2)))) +
+  pp.noalpha <- ggplot(report,
+                       aes(Plasmid,
+                           Sample,
+                           label = AMR_gene,
+                           fill = Inc_group,
+                           text = paste("Sureness: ",
+                                        round(report$Sureness, 2)))) +
     geom_tile(colour = "white", alpha = 1) +
     scale_fill_manual(values = colours.inc, name = "Inc Group") +
     theme_classic(base_size = 14) +
-    theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.45, size = rel(0.7)),
+    theme(axis.text.x = element_text(angle = 90,
+                                     hjust = 1,
+                                     vjust = 0.45,
+                                     size = rel(0.7)),
           axis.text.y = element_text(size = rel(0.7)),
-          axis.title.x=element_blank(),
+          axis.title.x = element_blank(),
           legend.title = element_text(),
-          axis.title.y=element_blank(),
-          panel.background = element_rect(fill="grey95")) +
+          axis.title.y = element_blank(),
+          panel.background = element_rect(fill = "grey95")) +
     scale_x_discrete(expand = c(0, 0)) +
     scale_y_discrete(expand = c(0, 0))
 
   if (!is.na(len.highlight)){
-    seq.lengths <- report[report$Inc_group != "-",] %>%
+    seq.lengths <- report[report$Inc_group != "-", ] %>%
       group_by(Sample, Inc_group) %>%
-      filter(Coverage>=99) %>%
+      filter(Coverage >= 99) %>%
       arrange(Sample, Inc_group, desc(Length)) %>%
       slice(c(1))
     seq.lengths$maxed <- "Attention"
-    report <- full_join(seq.lengths, report, by=colnames(report))
-    pp.noalpha <- pp.noalpha + geom_point(aes(x=Plasmid, y=Sample), seq.lengths[,1:2], inherit.aes = F, alpha = 0.5, size = 0.5)
+    report <- full_join(seq.lengths, report, by = colnames(report))
+    pp.noalpha <- pp.noalpha +
+      geom_point(aes(x = Plasmid,
+                     y = Sample),
+                 seq.lengths[, 1:2],
+                 inherit.aes = F,
+                 alpha = 0.5,
+                 size = 0.5)
   }
 
-  pp.noalpha <- pp.noalpha + theme(axis.text.x = element_text(colour = colours.amr2))
+  pp.noalpha <- pp.noalpha +
+    theme(axis.text.x = element_text(colour = colours.amr2))
 
-  pp.noalpha <- pp.noalpha + geom_point(aes(x=Plasmid, y=Sample, label = AMR_gene, text = paste("Sureness: ", round(Sureness, 2))),
-                                        inherit.aes = F,
-                                        alpha = 0.001,
-                                        size = 0.8,
-                                        colour = "white")
+  pp.noalpha <- pp.noalpha +
+    geom_point(aes(x = Plasmid,
+                   y = Sample,
+                   label = AMR_gene,
+                   text = paste("Sureness: ",
+                                round(Sureness, 2))),
+                    inherit.aes = F,
+                    alpha = 0.001,
+                    size = 0.8,
+                    colour = "white")
 
-  pp.noalpha <- pp.noalpha + geom_point(aes(x=Plasmid, y=Sample, label = AMR_gene, text = paste("Sureness: ", round(Sureness, 2))),
-                                        data = subset(report, AMR_gene!="-"),
-                                        inherit.aes = F,
-                                        alpha = 0.25,
-                                        size = 1)
+  pp.noalpha <- pp.noalpha +
+    geom_point(aes(x = Plasmid,
+                   y = Sample,
+                   label = AMR_gene,
+                   text = paste("Sureness: ",
+                                round(Sureness, 2))),
+               data = subset(report, AMR_gene != "-"),
+               inherit.aes = F,
+               alpha = 0.25,
+               size = 1)
 
-  m = list(l = 150,
+  m <- list(l = 150,
            r = 100,
            b = 100,
            t = 100,
@@ -254,16 +316,28 @@ create_plotly <- function(report, user, api.key,  post=NA, title="Plasmid Profil
             titlefont = f)
 
   # Make ggplotly object
-  ppp <- ggplotly(pp.noalpha, tooltip = c("y", "x", "text", "label", "fill")) %>%
-    plotly::layout(autosize = T, width = 1200, height = 1000, font = f, margin = m, xaxis=x, yaxis=y, title = title)
+  ppp <- ggplotly(pp.noalpha, tooltip = c("y",
+                                          "x",
+                                          "text",
+                                          "label",
+                                          "fill")) %>%
+    plotly::layout(autosize = T,
+                   width = 1200,
+                   height = 1000,
+                   font = f,
+                   margin = m,
+                   xaxis = x,
+                   yaxis = y,
+                   title = title)
 
   # Publish
-  if(!is.na(post)){
-    Sys.setenv("plotly_username"=user)
-    Sys.setenv("plotly_api_key"=api.key)
-    if (!exists("filename")){filename <- "Profiles"}
+  if (!is.na(post)){
+    Sys.setenv("plotly_username" = user)
+    Sys.setenv("plotly_api_key" = api.key)
+    if (!exists("filename")){
+      filename <- "Profiles"
+      }
     plotly_POST(ppp, filename)
   }
   ppp
 }
-
