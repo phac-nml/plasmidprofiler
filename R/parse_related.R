@@ -23,7 +23,7 @@
 
 #' Blast file import function
 #'
-#' This function imports the 25 column blast file and adds column headers while designating the base filename.
+#' This function imports the 25 column blast file and adds column headers
 #'
 #' @param br.file System location of the blast file, no default.
 #' @return Dataframe of blast data with correct column headers.

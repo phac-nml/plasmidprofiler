@@ -101,16 +101,18 @@ subsampler <- function(report,
                        len.filter = NA,
                        inc.combine = NA){
 
+  filename <- get("name", envir = filecache) # Import from cache
+
   if (!is.na(cov.filter)){
-    filename <<- paste(filename, "_cov", cov.filter, sep = "")
+    filename <- paste(filename, "_cov", cov.filter, sep = "")
     report <- report[report$Coverage > cov.filter, ]
   }
   if (!is.na(sure.filter)){
-    filename <<- paste(filename, "_sure", sure.filter, sep = "")
+    filename <- paste(filename, "_sure", sure.filter, sep = "")
     report <- report[report$Sureness > sure.filter, ]
   }
   if (!is.na(len.filter)){
-    filename <<- paste(filename, "_len", len.filter, sep = "")
+    filename <- paste(filename, "_len", len.filter, sep = "")
     report <- report[report$Length > len.filter, ]
   }
   if (!is.na(inc.combine)){
@@ -119,6 +121,9 @@ subsampler <- function(report,
     # Replace all individual Col-type plasmids with just Col
     report$Inc_group[grep("Col", report$Inc_group)] <- "Col"
   }
+
+  assign("name", filename, envir = filecache) # Re-save filename to cache
+
   drop.levels(report)
 }
 

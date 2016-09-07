@@ -20,6 +20,13 @@
 #
 #  =============================================================================
 
+
+# Create filecache environment to store filename outside of all functions
+filecache <- new.env(hash = TRUE)
+filename <- paste("P2Run_", Sys.Date(), collapse = "", sep = "")
+assign("name", filename, envir = filecache)
+
+
 #' Main: Run everything
 #'
 #' Run all the interim functions to produce jpg, csv, and html outputs.
@@ -56,7 +63,6 @@ main <- function(blast.file,
                  anonymize=NA,
                  main.title="Plasmid Profiles") {
 
-  filename <<- paste("P2Run_", Sys.Date(), collapse = "", sep = "")
 
   if (typeof(blast.file) == "character"){
     blast.file <- read_blast(blast.file)
@@ -115,6 +121,9 @@ save_files <- function(report,
                        report.csv = NA,
                        webpage = NA,
                        title = "Plasmid Profiles" ){
+
+  filename <- get("name", envir = filecache)
+
   if (!is.na(plot.jpg)){
     g <- create_grob(report, grob.title = title)
     ggsave(paste(filename, ".jpg", sep = ""), g, device = "jpg", width = 12)

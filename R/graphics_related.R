@@ -165,9 +165,9 @@ create_grob <- function(report, grob.title = "Plasmid Profiles"){
   gt <- gtable(widths = unit(c(1, 7), "null"), heights = unit(c(7), "null"))
 
   title <- textGrob(grob.title, gp = gpar(fontsize = 24))
-  if (!exists("filename")){
-    filename <- "Profiles"
-    }
+
+  filename <- get("name", envir = filecache)
+
   footnote <- textGrob(filename,
                        x = 0,
                        hjust = 0,
@@ -334,9 +334,7 @@ create_plotly <- function(report,
   if (!is.na(post)){
     Sys.setenv("plotly_username" = user)
     Sys.setenv("plotly_api_key" = api.key)
-    if (!exists("filename")){
-      filename <- "Profiles"
-      }
+    filename <- get("name", envir = filecache)
     plotly_POST(ppp, filename)
   }
   ppp

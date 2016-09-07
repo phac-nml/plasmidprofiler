@@ -13,7 +13,7 @@ read_blast(br.file)
 Dataframe of blast data with correct column headers.
 }
 \description{
-This function imports the 25 column blast file and adds column headers while designating the base filename.
+This function imports the 25 column blast file and adds column headers
 }
 \examples{
 \dontrun{
