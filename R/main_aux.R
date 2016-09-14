@@ -23,13 +23,26 @@
 
 # Create filecache environment to store filename outside of all functions
 filecache <- new.env(hash = TRUE)
-filename <- paste("P2Run_", Sys.Date(), collapse = "", sep = "")
-assign("name", filename, envir = filecache)
-
+#filename <- paste("P2Run_", Sys.Date(), collapse = "", sep = "")
+assign("name", "P2Run", envir = filecache)
 
 #' Main: Run everything
 #'
-#' Run all the interim functions to produce jpg, csv, and html outputs.
+#' Run all the interim functions to produce outputs.
+#' \enumerate{
+#'   \item \code{\link{read_blast}} Import the blast file, add column names
+#'   \item \code{\link{blast_parser}} Parse imported file
+#'   \item \code{\link{amr_positives}} Detect AMR positive plasmids
+#'   \item \code{\link{read_srst2}} Import SRST2 file
+#'   \item \code{\link{combine_results}} Combine SRST2 and Blast
+#'   \item \code{\link{zetner_score}} Add Sureness value
+#'   \item \code{\link{amr_presence}} Add detected AMR to report
+#'   \item \code{\link{subsampler}} Apply filters to report
+#'   \item \code{\link{order_report}} Arrange report
+#'   \item \code{\link{save_files}} Save JPG and CSV
+#'   \item \code{\link{create_plotly}} Creates plot
+#'   \item \code{\link{save_files}} Save HTML plot
+#' }
 #'
 #' @param blast.file Either system location of blast results (tsv) or dataframe
 #' @param srst2.file Either system location of srst2 results (tsv) or dataframe
@@ -175,7 +188,7 @@ normalize <- function(x){
 
 # returns the sorted dataframe
 minmax <- function(df, maxcol, mincol){
-  mincolnorm <- -normalize(df[, mincol])
+  mincolnorm <- - normalize(df[, mincol])
   maxcolnorm <- normalize(df[, maxcol])
   mmsum <- maxcolnorm + mincolnorm
   df$mmsum <- mmsum

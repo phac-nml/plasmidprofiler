@@ -14,15 +14,18 @@ cl_arguments <- function(){
     make_option(c("-s", "--srst2file"), type="character", default=NULL,
                 help="SRST2 TSV file name", metavar="character"),
     make_option(c("-u", "--sureness"), type="numeric", default=0.75,
-                help="Sureness cut off, defaults to 0.75", metavar="numeric"),
+                help="Sureness cut off [default = %default]", metavar="numeric"),
     make_option(c("-c", "--coverage"), type="numeric", default=NA,
                 help="Percent coverage cut off", metavar="numeric"),
     make_option(c("-l", "--length"), type="numeric", default=NA,
                 help="Plasmid length cut off", metavar="numeric"),
     make_option(c("-a", "--anonymize"), action="store_true", default=NA,
                 help="Anonymize plasmid and sample names"),
-    make_option(c("-t", "--title"), type="character", default="Plasmids",
-                help="Title of image [default= %default]", metavar="character")
+    make_option(c("-o", "--outfile"), type="character", default="P2Run_",
+                help="Output filename prefix [default=  %default]", metavar="character"),
+    make_option(c("-t", "--title"), type="character", default="Plasmid Profiles",
+                help="Title of image [default = %default]", metavar="character")
+
   );
 
   opt_parser <- OptionParser(option_list=option_list);
@@ -37,6 +40,9 @@ cl_arguments <- function(){
 
 
 opt <- cl_arguments()
+
+filecache <- new.env(hash = TRUE)
+assign("name", opt$outfile, envir = filecache)
 
 Plasmidprofiler::main(blast.file = opt$blastfile,
      srst2.file = opt$srst2file,

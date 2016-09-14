@@ -5,7 +5,7 @@ Version: 0.1.0
 Authors@R: person("Adrian", "Zetner", email = "adrian.zetner@phac-aspc.gc.ca", role = c("aut", "cre"))
 Description: Contains functions developed to combine the results of querying a plasmid database using
     short-read sequence typing with the results of a blast analysis against those results.
-Depends: R (>= 3.3.1)
+Depends: R (>= 3.1.2)
 License: Apache License 2.0
 LazyData: TRUE
 RoxygenNote: 5.0.1
