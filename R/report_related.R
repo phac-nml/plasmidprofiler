@@ -247,7 +247,7 @@ order_report <- function(report, anonymize = NA){
                                 from = levels(report$Plasmid),
                                 to = paste("Plasmid",
                                            1:length(levels(report$Plasmid))))
-    filename <- paste(filename, "_anon", sep = "")
+    #filename <- paste(filename, "_anon", sep = "")
   }
 
   subset(report, select = -c(average))

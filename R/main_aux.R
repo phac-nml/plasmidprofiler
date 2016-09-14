@@ -22,9 +22,9 @@
 
 
 # Create filecache environment to store filename outside of all functions
-filecache <- new.env(hash = TRUE)
+#filecache <- new.env(hash = TRUE)
 #filename <- paste("P2Run_", Sys.Date(), collapse = "", sep = "")
-assign("name", "P2Run", envir = filecache)
+#assign("name", "P2Run", envir = filecache)
 
 #' Main: Run everything
 #'
