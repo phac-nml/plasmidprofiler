@@ -5,7 +5,6 @@
 suppressPackageStartupMessages(library("optparse"))
 suppressPackageStartupMessages(library("Plasmidprofiler"))
 
-
 cl_arguments <- function(){
   # CL arguments ####
   option_list = list(
@@ -25,6 +24,8 @@ cl_arguments <- function(){
                 help="Output filename prefix [default=  %default]", metavar="character"),
     make_option(c("-t", "--title"), type="character", default="Plasmid Profiles",
                 help="Title of image [default = %default]", metavar="character")
+    # make_option(c("-T", "--Test"), action="store_true", default=NA,
+    #             help="Test filecache")
 
   );
 
@@ -41,10 +42,10 @@ cl_arguments <- function(){
 
 opt <- cl_arguments()
 
-filecache <- new.env(hash = TRUE)
+filecache <- new.env()
 assign("name", opt$outfile, envir = filecache)
 
-Plasmidprofiler::main(blast.file = opt$blastfile,
+main(blast.file = opt$blastfile,
      srst2.file = opt$srst2file,
      coverage.filter = opt$coverage,
      sureness.filter = opt$sureness,

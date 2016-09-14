@@ -22,9 +22,17 @@
 
 
 # Create filecache environment to store filename outside of all functions
-#filecache <- new.env(hash = TRUE)
-#filename <- paste("P2Run_", Sys.Date(), collapse = "", sep = "")
-#assign("name", "P2Run", envir = filecache)
+.onAttach <- function(libname, pkgname) {
+  packageStartupMessage("Welcome")
+  if (!exists("filecache")){
+    packageStartupMessage("No filecache found, creating...")
+    filecache <<- new.env()
+    filename <- paste("P2Run_", Sys.Date(), collapse = "", sep = "")
+    assign("name", filename, envir = filecache)
+  }
+
+
+}
 
 #' Main: Run everything
 #'
