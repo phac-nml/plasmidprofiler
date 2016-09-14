@@ -18,7 +18,7 @@ Composite image
 Combines the tree, heatmap, and titles to create final heatmap image.
 }
 \examples{
-
+.onAttach()
 create_grob(report, grob.title="Plasmid Profiles")
 
 }

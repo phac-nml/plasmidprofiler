@@ -143,9 +143,9 @@ plot_heatmap <- function(report, len.highlight=NA){
 #' @import gtable
 #'
 #' @examples
-#'
+#' \dontrun{
 #' create_grob(report, grob.title="Plasmid Profiles")
-#'
+#' }
 #' @export
 create_grob <- function(report, grob.title = "Plasmid Profiles"){
   pp <- plot_heatmap(report)
