@@ -24,14 +24,7 @@
 # Create filecache environment to store filename outside of all functions
 .onAttach <- function(libname, pkgname) {
   packageStartupMessage("Welcome")
-  if (!exists("filecache")){
-    packageStartupMessage("No filecache found, creating...")
-    filecache <<- new.env(parent = as.environment("package:Plasmidprofiler"))
-    filename <- paste("P2Run", Sys.Date(), collapse = "", sep = "")
-    assign("name", filename, envir = filecache)
-  }
-
-
+  file_cacher()
 }
 
 #' Main: Run everything
@@ -202,4 +195,17 @@ minmax <- function(df, maxcol, mincol){
   df$mmsum <- mmsum
   df <- arrange(df, desc(mmsum))
   df
+}
+
+#' Filecacher
+#'
+#' Creates filecache environment if needed
+#'
+file_cacher <- function(){
+  if (!exists("filecache")){
+    packageStartupMessage("No filecache found, creating...")
+    filecache <<- new.env(parent = .GlobalEnv)
+    filename <- paste("P2Run", Sys.Date(), collapse = "", sep = "")
+    assign("name", filename, envir = filecache)
+  }
 }
