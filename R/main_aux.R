@@ -22,11 +22,11 @@
 
 
 # Create filecache environment to store filename outside of all functions
-.onLoad <- function(libname, pkgname) {
+.onAttach <- function(libname, pkgname) {
   packageStartupMessage("Welcome")
   if (!exists("filecache")){
     packageStartupMessage("No filecache found, creating...")
-    filecache <<- new.env()
+    filecache <<- new.env(parent = as.environment("package:Plasmidprofiler"))
     filename <- paste("P2Run", Sys.Date(), collapse = "", sep = "")
     assign("name", filename, envir = filecache)
   }
