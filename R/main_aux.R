@@ -77,6 +77,7 @@ main <- function(blast.file,
                  anonymize=NA,
                  main.title="Plasmid Profiles") {
 
+  file_cacher()
 
   if (typeof(blast.file) == "character"){
     blast.file <- read_blast(blast.file)
