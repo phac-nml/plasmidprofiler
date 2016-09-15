@@ -22,7 +22,7 @@
 
 
 # Create filecache environment to store filename outside of all functions
-.onAttach <- function(libname, pkgname) {
+.onLoad <- function(libname, pkgname) {
   packageStartupMessage("Welcome")
   if (!exists("filecache")){
     packageStartupMessage("No filecache found, creating...")
