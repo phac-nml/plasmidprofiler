@@ -162,9 +162,14 @@ tree_maker <- function(report, hc.only = NA){
   rownames (reportable.matrix) <- rnames
 
 
-  reportable.hc <- hclust(dist(reportable.matrix))
-
-  tree.data <- dendro_data(as.dendrogram(reportable.hc), type = "rectangle")
+  reportable.hc <- hclust(dist(reportable.matrix)) # Very slow. Implement Rcpp?
+  
+  if (!is.na(hc.only)){
+    return(reportable.hc)
+  }
+  
+  # Node stackoverflow on large data sets on dendro_data
+  tree.data <- dendro_data(as.dendrogram(reportable.hc), type = "rectangle") 
   tree <- ggplot(segment(tree.data)) +
     geom_segment(aes(x = x, y = y, xend = xend, yend = yend)) +
     coord_flip() +
@@ -189,11 +194,9 @@ tree_maker <- function(report, hc.only = NA){
                                  0),
                                "null"))
     }
-  if (!is.na(hc.only)){
-    reportable.hc
-  }else{
+
     tree
-  }
+  
 }
 
 
