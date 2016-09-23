@@ -23,7 +23,9 @@ cl_arguments <- function(){
     make_option(c("-o", "--outfile"), type="character", default="P2Run_",
                 help="Output filename prefix [default=  %default]", metavar="character"),
     make_option(c("-t", "--title"), type="character", default="Plasmid Profiles",
-                help="Title of image [default = %default]", metavar="character")
+                help="Title of image [default = %default]", metavar="character"),
+    make_option(c("-C", "--combineincs"), action="store_true", default=NA,
+                help="Combine very closely related incompatibility groups. eg. ")    
     # make_option(c("-T", "--Test"), action="store_true", default=NA,
     #             help="Test filecache")
 

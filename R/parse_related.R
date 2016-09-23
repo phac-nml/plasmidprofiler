@@ -62,7 +62,12 @@ read_blast <- function(br.file){
                 "qlen",
                 "slen",
                 "salltitles")
-  read.table(br.file, sep = "\t", col.names = blast_cols)
+  br <- read.table(br.file, sep = "\t", col.names = blast_cols)
+  if (dim(br)[2] != 25){
+    stop("Input blast file must be 25 columns")
+  }else{
+    br
+  }
 }
 
 
@@ -80,7 +85,33 @@ read_blast <- function(br.file){
 #' @export
 
 blast_parser <- function(blast.results){
-
+  if (colnames(blast.results)[1] == "V1"){
+    colnames(blast.results) <- c("qseqid",
+                                 "sseqid",
+                                 "pident",
+                                 "length",
+                                 "mismatch",
+                                 "gapopen",
+                                 "qstart",
+                                 "qend",
+                                 "sstart",
+                                 "send",
+                                 "evalue",
+                                 "bitscore",
+                                 "sallseqid",
+                                 "score",
+                                 "nident",
+                                 "positive",
+                                 "gaps",
+                                 "ppos",
+                                 "qframe",
+                                 "sframe",
+                                 "qseq",
+                                 "sseq",
+                                 "qlen",
+                                 "slen",
+                                 "salltitles")
+  }
   #pull first 4 and 23/24 columns (qseqid, sseqid, pident, length, qlen, slen)
   adj.br <- blast.results[, c(1:4, 23, 24)]
   # Create new column of ratio between hit length to query length
