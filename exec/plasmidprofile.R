@@ -53,4 +53,5 @@ main(blast.file = opt$blastfile,
      sureness.filter = opt$sureness,
      length.filter = opt$length,
      anonymize = opt$anonymize,
+     combine.inc = opt$combineincs,
      main.title = opt$title)
