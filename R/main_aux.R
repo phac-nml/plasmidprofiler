@@ -206,7 +206,7 @@ file_cacher <- function(){
   if (!exists("filecache")){
     packageStartupMessage("No filecache found, creating...")
     filecache <<- new.env(parent = .GlobalEnv)
-    filename <- paste("P2Run", Sys.Date(), collapse = "", sep = "")
+    filename <- "P2Run"
     assign("name", filename, envir = filecache)
   }
 }

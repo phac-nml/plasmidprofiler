@@ -211,7 +211,7 @@ create_grob <- function(report, grob.title = "Plasmid Profiles"){
 #' @param title Title of heatmap
 #' @param len.highlight If anything but NA will highlight the largest plasmid hit per incompatibility group
 #' @return plotly object
-#' @importFrom plotly ggplotly plotly_POST
+#' @importFrom plotly ggplotly plotly_POST config
 #' @importFrom graphics layout
 #' @import ggplot2
 #' @import dplyr
@@ -281,6 +281,7 @@ create_plotly <- function(report,
     geom_point(aes(x = Plasmid,
                    y = Sample,
                    label = AMR_gene,
+                   fill = Inc_group,
                    text = paste("Sureness: ",
                                 round(Sureness, 2))),
                     inherit.aes = F,
@@ -288,16 +289,17 @@ create_plotly <- function(report,
                     size = 0.8,
                     colour = "white")
 
-  pp.noalpha <- pp.noalpha +
-    geom_point(aes(x = Plasmid,
-                   y = Sample,
-                   label = AMR_gene,
-                   text = paste("Sureness: ",
-                                round(Sureness, 2))),
-               data = subset(report, AMR_gene != "-"),
-               inherit.aes = F,
-               alpha = 0.25,
-               size = 1)
+  # Originally included to show which have AMR gene present. Not working as desired
+  # pp.noalpha <- pp.noalpha +
+  #   geom_point(aes(x = Plasmid,
+  #                  y = Sample,
+  #                  label = AMR_gene,
+  #                  text = paste("Sureness: ",
+  #                               round(Sureness, 2))),
+  #              data = subset(report, AMR_gene != "-"),
+  #              inherit.aes = F,
+  #              alpha = 0.25,
+  #              size = 1)
 
   m <- list(l = 150,
            r = 100,
@@ -328,7 +330,15 @@ create_plotly <- function(report,
                    margin = m,
                    xaxis = x,
                    yaxis = y,
-                   title = title)
+                   title = title) %>%
+    plotly::config(., displaylogo = FALSE,
+                   modeBarButtonsToRemove = list('sendDataToCloud',
+                                                 'select2d',
+                                                 'lasso2d',
+                                                 'hoverClosestCartesian',
+                                                 'hoverCompareCartesian',
+                                                 'toImage'))
+
 
   # Publish
   if (!is.na(post)){
