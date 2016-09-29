@@ -141,7 +141,12 @@ save_files <- function(report,
 
   if (!is.na(plot.jpg)){
     g <- create_grob(report, grob.title = title)
-    ggsave(paste(filename, ".jpg", sep = ""), g, device = "jpg", width = 12)
+    #ggsave(paste(filename, ".jpg", sep = ""), g, device = "jpg", width = 12)
+    ggsave(paste(filename, ".jpg", sep = ""),
+           g,
+           type = "cairo",
+           device="jpg",
+           width = 12)
   }
 
   if (!is.na(report.csv)){
