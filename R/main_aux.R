@@ -123,7 +123,7 @@ main <- function(blast.file,
 #' @return Named vector of colours, names are factor levels of column supplied
 #' @import ggplot2
 #' @import dplyr
-#' @importFrom plotly ggplotly plotly_POST as.widget
+#' @importFrom plotly ggplotly plotly_POST as_widget
 #' @importFrom htmlwidgets saveWidget
 #' @importFrom utils write.csv
 #' @examples
@@ -152,7 +152,7 @@ save_files <- function(report,
   # Write offline HTML object
   if (!is.na(webpage)){
     ppp <- create_plotly(report)
-    htmlwidgets::saveWidget(as.widget(ppp), paste(filename, ".html", sep = ""))
+    htmlwidgets::saveWidget(as_widget(ppp), paste(filename, ".html", sep = ""))
   }
 }
 
