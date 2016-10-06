@@ -88,6 +88,7 @@ plot_heatmap <- function(report, len.highlight=NA){
                ) +
     geom_tile(colour = "white") +
     scale_fill_manual(values = colours.inc, name = "Incompatibility Group") +
+    guides(fill=guide_legend(ncol=2)) +
     theme_classic(base_size = 8) +
     theme(axis.text.x = element_text(angle = 90,
                                      hjust = 1,
@@ -166,9 +167,9 @@ create_grob <- function(report, grob.title = "Plasmid Profiles"){
 
   title <- textGrob(grob.title, gp = gpar(fontsize = 24))
 
-  filename <- get("name", envir = filecache)
+  mods <- get("mods", envir = filecache)
 
-  footnote <- textGrob(filename,
+  footnote <- textGrob(mods,
                        x = 0,
                        hjust = 0,
                        gp = gpar(fontface = "italic"))

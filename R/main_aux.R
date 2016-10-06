@@ -208,10 +208,11 @@ minmax <- function(df, maxcol, mincol){
 #' Creates filecache environment if needed
 #'
 file_cacher <- function(){
-  if (!exists("filecache")){
-    packageStartupMessage("No filecache found, creating...")
+  #if (!exists("filecache")){
+  #  packageStartupMessage("No filecache found, creating...")
     filecache <<- new.env(parent = .GlobalEnv)
     filename <- "P2Run"
     assign("name", filename, envir = filecache)
-  }
+    assign("mods", "Subsampling applied: ", envir = filecache)
+  #}
 }

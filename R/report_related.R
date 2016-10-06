@@ -101,18 +101,18 @@ subsampler <- function(report,
                        len.filter = NA,
                        inc.combine = NA){
 
-  filename <- get("name", envir = filecache) # Import from cache
+  mods <- get("mods", envir = filecache) # Import from cache
 
   if (!is.na(cov.filter)){
-    #filename <- paste(filename, "_cov", cov.filter, sep = "")
+    mods <- paste(mods, " Coverage ", cov.filter, "%", sep = "")
     report <- report[report$Coverage > cov.filter, ]
   }
   if (!is.na(sure.filter)){
-    #filename <- paste(filename, "_sure", sure.filter, sep = "")
+    mods <- paste(mods, " Sureness ", sure.filter, sep = "")
     report <- report[report$Sureness > sure.filter, ]
   }
   if (!is.na(len.filter)){
-    #filename <- paste(filename, "_len", len.filter, sep = "")
+    mods <- paste(mods, " Length ", len.filter, sep = "")
     report <- report[report$Length > len.filter, ]
   }
   if (!is.na(inc.combine)){
@@ -120,9 +120,12 @@ subsampler <- function(report,
     report$Inc_group <- str_split_fixed(report$Inc_group, "\\(", 2)[, 1]
     # Replace all individual Col-type plasmids with just Col
     report$Inc_group[grep("Col", report$Inc_group)] <- "Col"
+    mods <- paste(mods, " Inc Groups Combined")
   }
-
-  assign("name", filename, envir = filecache) # Re-save filename to cache
+  if (mods == "Subsampling applied:"){
+    mods <- paste(mods, "none")
+  }
+  assign("mods", mods, envir = filecache) # Re-save filename to cache
 
   drop.levels(report)
 }
@@ -163,13 +166,13 @@ tree_maker <- function(report, hc.only = NA){
 
 
   reportable.hc <- hclust(dist(reportable.matrix)) # Very slow. Implement Rcpp?
-  
+
   if (!is.na(hc.only)){
     return(reportable.hc)
   }
-  
+
   # Node stackoverflow on large data sets on dendro_data
-  tree.data <- dendro_data(as.dendrogram(reportable.hc), type = "rectangle") 
+  tree.data <- dendro_data(as.dendrogram(reportable.hc), type = "rectangle")
   tree <- ggplot(segment(tree.data)) +
     geom_segment(aes(x = x, y = y, xend = xend, yend = yend)) +
     coord_flip() +
@@ -196,7 +199,7 @@ tree_maker <- function(report, hc.only = NA){
     }
 
     tree
-  
+
 }
 
 
