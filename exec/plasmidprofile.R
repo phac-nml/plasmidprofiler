@@ -25,7 +25,7 @@ cl_arguments <- function(){
     make_option(c("-t", "--title"), type="character", default="Plasmid Profiles",
                 help="Title of image [default = %default]", metavar="character"),
     make_option(c("-C", "--combineincs"), action="store_true", default=NA,
-                help="Combine very closely related incompatibility groups. eg. ")    
+                help="Combine very closely related incompatibility groups. eg. ")
     # make_option(c("-T", "--Test"), action="store_true", default=NA,
     #             help="Test filecache")
 
@@ -44,8 +44,9 @@ cl_arguments <- function(){
 
 opt <- cl_arguments()
 
-filecache <- new.env()
+filecache <<- new.env(parent = .GlobalEnv)
 assign("name", opt$outfile, envir = filecache)
+assign("mods", "Subsampling applied: ", envir = filecache)
 
 main(blast.file = opt$blastfile,
      srst2.file = opt$srst2file,

@@ -2,7 +2,7 @@
 % Please edit documentation in R/main_aux.R
 \name{save_files}
 \alias{save_files}
-\title{Save Files Produced}
+\title{Save Files}
 \usage{
 save_files(report, plot.jpg = NA, report.csv = NA, webpage = NA,
   title = "Plasmid Profiles")
@@ -10,7 +10,7 @@ save_files(report, plot.jpg = NA, report.csv = NA, webpage = NA,
 \arguments{
 \item{report}{Dataframe of results}
 
-\item{plot.jpg}{Do you want to save a jpg? (Anything but NA)}
+\item{plot.jpg}{Do you want to save a jpg? (Anything but NA), "../dbdeclutter/srst2_vrrunE.tsv"}
 
 \item{report.csv}{Do you want to save a text report? (Anything but NA)}
 
@@ -22,8 +22,7 @@ save_files(report, plot.jpg = NA, report.csv = NA, webpage = NA,
 Named vector of colours, names are factor levels of column supplied
 }
 \description{
-This function uses RColorBrewer to produce palettes based
-on the factor levels of the identified column in a report.
+Save various files: JPG, CSV, HTML depending on parameters
 }
 \examples{
 \dontrun{

@@ -77,7 +77,9 @@ main <- function(blast.file,
                  anonymize=NA,
                  main.title="Plasmid Profiles") {
 
-  file_cacher()
+  if (!exists("filecache")){
+    file_cacher()
+  }
 
   if (typeof(blast.file) == "character"){
     blast.file <- read_blast(blast.file)
@@ -110,13 +112,12 @@ main <- function(blast.file,
   save_files(report, webpage = 1, title = main.title)
 }
 
-#' Save Files Produced
+#' Save Files
 #'
-#' This function uses RColorBrewer to produce palettes based
-#' on the factor levels of the identified column in a report.
+#' Save various files: JPG, CSV, HTML depending on parameters
 #'
 #' @param report Dataframe of results
-#' @param plot.jpg Do you want to save a jpg? (Anything but NA)
+#' @param plot.jpg Do you want to save a jpg? (Anything but NA), "../dbdeclutter/srst2_vrrunE.tsv"
 #' @param report.csv Do you want to save a text report? (Anything but NA)
 #' @param webpage Do you want to save an interactive heatmap as html? (Anything but NA)
 #' @param title Enter a title for the plot
@@ -173,7 +174,11 @@ save_files <- function(report,
 #'  }
 #' @export
 normalize <- function(x){
-  (x - min(x)) / (max(x) - min(x))
+  if (max(x)-min(x) == 0){
+    max(x)/min(x)
+  }else{
+    (x - min(x)) / (max(x) - min(x))
+  }
 }
 
 #' Minmax
@@ -207,12 +212,12 @@ minmax <- function(df, maxcol, mincol){
 #'
 #' Creates filecache environment if needed
 #'
+#' @export
 file_cacher <- function(){
   #if (!exists("filecache")){
   #  packageStartupMessage("No filecache found, creating...")
     filecache <<- new.env(parent = .GlobalEnv)
-    filename <- "P2Run"
-    assign("name", filename, envir = filecache)
+    assign("name", "P2Run", envir = filecache)
     assign("mods", "Subsampling applied: ", envir = filecache)
   #}
 }

@@ -29,6 +29,8 @@
 #' @seealso \code{\link{subsampler}}, \code{\link{combine_results}}
 #' @param report Dataframe of results produced by \code{\link{subsampler}} or \code{\link{combine_results}}
 #' @return Report with zetner score added
+#' @importFrom magrittr %>%
+#' @importFrom dplyr group_by arrange ungroup
 #' @examples
 #' \dontrun{
 #' zetner_score(report)
@@ -155,6 +157,8 @@ subsampler <- function(report,
 #' @importFrom stats as.dendrogram dist hclust
 #' @export
 tree_maker <- function(report, hc.only = NA){
+  if (length(levels(report$Sample)) == 1){ NA }
+
   reportable.wide <- dcast(report, Sample ~ Plasmid, value.var = "Sureness")
   reportable.wide[is.na(reportable.wide)] <- 0
 
@@ -220,14 +224,14 @@ tree_maker <- function(report, hc.only = NA){
 #' @importFrom magrittr %>%
 #' @export
 order_report <- function(report, anonymize = NA){
+  if (length(levels(report$Sample)) > 1){
+    reportable.hc <- tree_maker(report, hc.only = 1)
+    reportable.phylo <- as.phylo(reportable.hc)
 
-  reportable.hc <- tree_maker(report, hc.only = 1)
-  reportable.phylo <- as.phylo(reportable.hc)
-
-  # First order Samples based on HC / Phylo
-  report$Sample <- ordered(report$Sample,
-                    levels = reportable.phylo$tip.label[reportable.hc$order])
-
+    # First order Samples based on HC / Phylo
+    report$Sample <- ordered(report$Sample,
+                      levels = reportable.phylo$tip.label[reportable.hc$order])
+  }
   report <- report %>%
     group_by(Plasmid) %>%
     mutate(average = mean(Sureness))

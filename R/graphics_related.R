@@ -258,28 +258,28 @@ create_plotly <- function(report,
     scale_x_discrete(expand = c(0, 0)) +
     scale_y_discrete(expand = c(0, 0))
 
-  if (!is.na(len.highlight)){
-    seq.lengths <- report[report$Inc_group != "-", ] %>%
-      group_by(Sample, Inc_group) %>%
-      filter(Coverage >= 99) %>%
-      arrange(Sample, Inc_group, desc(Length)) %>%
-      slice(c(1))
-    seq.lengths$maxed <- "Attention"
-    report <- full_join(seq.lengths, report, by = colnames(report))
-    pp.noalpha <- pp.noalpha +
-      geom_point(aes(x = Plasmid,
-                     y = Sample),
-                 seq.lengths[, 1:2],
-                 inherit.aes = F,
-                 alpha = 0.5,
-                 size = 0.5)
-  }
+  # if (!is.na(len.highlight)){
+  #   seq.lengths <- report[report$Inc_group != "-", ] %>%
+  #     group_by(Sample, Inc_group) %>%
+  #     filter(Coverage >= 99) %>%
+  #     arrange(Sample, Inc_group, desc(Length)) %>%
+  #     slice(c(1))
+  #   seq.lengths$maxed <- "Attention"
+  #   report <- full_join(seq.lengths, report, by = colnames(report))
+  #   pp.noalpha <- pp.noalpha +
+  #     geom_point(aes(x = Plasmid,
+  #                    y = Sample),
+  #                seq.lengths[, 1:2],
+  #                inherit.aes = F,
+  #                alpha = 0.5,
+  #                size = 0.5)
+  # }
 
   pp.noalpha <- pp.noalpha +
     theme(axis.text.x = element_text(colour = colours.amr2))
 
   pp.noalpha <- pp.noalpha +
-    geom_point(aes(x = Plasmid,
+    geom_tile(aes(x = Plasmid,
                    y = Sample,
                    label = AMR_gene,
                    fill = Inc_group,
@@ -287,7 +287,9 @@ create_plotly <- function(report,
                                 round(Sureness, 2))),
                     inherit.aes = F,
                     alpha = 0.001,
-                    size = 0.8,
+                    width = 0.99,
+                    height = 0.99,
+                    show.legend = FALSE,
                     colour = "white")
 
   # Originally included to show which have AMR gene present. Not working as desired
@@ -302,11 +304,11 @@ create_plotly <- function(report,
   #              alpha = 0.25,
   #              size = 1)
 
-  m <- list(l = 150,
+  m <- list(l = 200,
            r = 100,
-           b = 100,
+           b = 200,
            t = 100,
-           pad = 10)
+           pad = 50)
 
   f <- list(family = "Arial, Helvetica, sans-serif",
             size = 18,
@@ -337,8 +339,8 @@ create_plotly <- function(report,
                                                  'select2d',
                                                  'lasso2d',
                                                  'hoverClosestCartesian',
-                                                 'hoverCompareCartesian',
-                                                 'toImage'))
+                                                 'hoverCompareCartesian'))
+                                                 # 'toImage'))
 
 
   # Publish
