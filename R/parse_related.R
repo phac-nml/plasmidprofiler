@@ -162,8 +162,9 @@ amr_positives <- function(blast.results){
   blast.results <- blast.results[grep("(AMR)", blast.results$qseqid), ]
   blast.results$qseqid <- as.character(blast.results$qseqid)
 
+  # This is dumb, replacing with better method
   if (length(grep("AMR", blast.results$qseqid)) > 0){
-    for (i in 1:nrow(blast.results)){
+    for (i in grep("AMR", blast.results$qseqid)){
       if (blast.results[i, 3] == 100){
         splt <- strsplit(blast.results[i, 1], split = ")")[[1]][2]
         splt <- strsplit(splt, split = "_")[[1]][1]
