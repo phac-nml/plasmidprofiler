@@ -14,7 +14,7 @@ Two column DF of plasmid names and genes present
 }
 \description{
 This function loads the imported blast results, identifies which plasmids
-carry AMR genes at 100\% identity. May have issues with multiple genes per
+carry AMR genes at highest identity. May have issues with multiple genes per
 plasmid, currently optimized for identifying one of two genes
 }
 \examples{

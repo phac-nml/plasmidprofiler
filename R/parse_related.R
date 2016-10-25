@@ -140,11 +140,13 @@ blast_parser <- function(blast.results){
 #' Identify Antimicrobial Resistance Positive Plasmids from Blast Results
 #'
 #' This function loads the imported blast results, identifies which plasmids
-#' carry AMR genes at 100\% identity. May have issues with multiple genes per
+#' carry AMR genes at highest identity. May have issues with multiple genes per
 #' plasmid, currently optimized for identifying one of two genes
 #'
 #' @param blast.results Blast results loaded from read_blast
 #' @return Two column DF of plasmid names and genes present
+#' @importFrom magrittr %>%
+#' @importFrom dplyr group_by select top_n bind_rows
 #' @examples
 #' \dontrun{
 #' amr_positives(blastdata)
@@ -153,33 +155,48 @@ blast_parser <- function(blast.results){
 
 amr_positives <- function(blast.results){
 
-  # Find all AMR positives, select perfect matches only, append to pos.samples
-  pos.samples <- data.frame(Plasmid = character(),
-                            Gene = character(),
-                            row.names = NULL,
-                            stringsAsFactors = FALSE)
-  ii <- 1
-  blast.results <- blast.results[grep("(AMR)", blast.results$qseqid), ]
+  # Find all AMR positives, select best matches only, append to pos.samples
+
+  # Pull the best per plasmid
+  blast.results <- (blast.results[grep("AMR", blast.results$qseqid), ] %>%
+                      group_by(sseqid) %>%
+                      select(sseqid, qseqid, pident) %>%
+                      top_n(n = 1))
   blast.results$qseqid <- as.character(blast.results$qseqid)
+  pos.samples <- data_frame()
+  if (length(blast.results$qseqid) == 0){ # Return empty if none
+    print("No match to AMR genes in DB")
+    stop(pos.samples)
+  }
+
+
+  for (i in 1:length(blast.results$sseqid)){
+    splt <- strsplit(blast.results$qseqid[i], split = ")")[[1]][2]
+    splt <- strsplit(splt, split = "_")[[1]][1]
+    tempplas <- as.character(blast.results$sseqid[i])
+    tempgene <- paste(splt, blast.results$pident[i], sep = "_%")
+    pos.samples <- bind_rows(pos.samples,
+                             data_frame(Plasmid=tempplas, Gene=tempgene))
+  }
 
   # This is dumb, replacing with better method
-  if (length(grep("AMR", blast.results$qseqid)) > 0){
-    for (i in grep("AMR", blast.results$qseqid)){
-      if (blast.results[i, 3] == 100){
-        splt <- strsplit(blast.results[i, 1], split = ")")[[1]][2]
-        splt <- strsplit(splt, split = "_")[[1]][1]
-        pos.samples[ii, 1] <- as.character(blast.results[i, 2])
-        pos.samples[ii, "Gene"] <- splt
-        ii <- ii + 1
-      }
-    }
-    pos.samples <- unique(pos.samples)
-    pos.samples[, 1] <- as.factor(pos.samples[, 1])
-    pos.samples[, 2] <- as.factor(pos.samples[, 2])
-
-  }else {
-    print("No match to AMR genes in DB")
-    }
+  # if (length(grep("AMR", blast.results$qseqid)) > 0){
+  #   for (i in grep("AMR", blast.results$qseqid)){
+  #     if (blast.results[i, 3] == 100){
+  #       splt <- strsplit(blast.results[i, 1], split = ")")[[1]][2]
+  #       splt <- strsplit(splt, split = "_")[[1]][1]
+  #       pos.samples[ii, 1] <- as.character(blast.results[i, 2])
+  #       pos.samples[ii, "Gene"] <- splt
+  #       ii <- ii + 1
+  #     }
+  #   }
+  #   pos.samples <- unique(pos.samples)
+  #   pos.samples[, 1] <- as.factor(pos.samples[, 1])
+  #   pos.samples[, 2] <- as.factor(pos.samples[, 2])
+  #
+  # }else {
+  #   print("No match to AMR genes in DB")
+  #   }
 
   pos.samples
 }
@@ -224,11 +241,11 @@ combine_results <- function(sr, br){
                   "clusterid",
                   "length")]
   # Match plasmids to BR Inc Group and append to report
-  report$plasmid <- as.character(br$qseqid[match(report$gene, br$sseqid)])
+  report$Plasmid <- as.character(br$qseqid[match(report$gene, br$sseqid)])
   # Replace NAs (no Inc match) with Hyphen
-  report$plasmid[is.na(report$plasmid)] <- "-"
+  report$Plasmid[is.na(report$Plasmid)] <- "-"
   # Simplify names of Inc groups (remove the sequence data)
-  report$plasmid <- str_split_fixed(report$plasmid, "_", 3)[, 1]
+  report$Plasmid <- str_split_fixed(report$Plasmid, "_", 3)[, 1]
   colnames(report) <- c("Sample",
                         "Plasmid",
                         "Coverage",
