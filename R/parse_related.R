@@ -166,7 +166,8 @@ amr_positives <- function(blast.results){
   pos.samples <- data_frame()
   if (length(blast.results$qseqid) == 0){ # Return empty if none
     print("No match to AMR genes in DB")
-    stop(pos.samples)
+    pos.samples <- data_frame(Plasmid='', Gene = '')
+    return(pos.samples)
   }
 
 
