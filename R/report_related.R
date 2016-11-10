@@ -157,7 +157,10 @@ subsampler <- function(report,
 #' @importFrom stats as.dendrogram dist hclust
 #' @export
 tree_maker <- function(report, hc.only = NA){
-  if (length(levels(report$Sample)) == 1){ NA }
+  if (length(levels(report$Sample)) == 0){
+    tree <- ggplot() + geom_blank() + theme_void()
+    return(tree)
+  }
 
   reportable.wide <- dcast(report, Sample ~ Plasmid, value.var = "Sureness")
   reportable.wide[is.na(reportable.wide)] <- 0
