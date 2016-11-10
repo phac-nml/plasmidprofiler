@@ -314,7 +314,12 @@ create_plotly <- function(report,
             size = 18,
             color = "#7f7f7f")
 
-  x <- list(title = "Plasmid",
+  hacktitle <- paste(".", paste(rep(" ", 60), collapse=""),
+                     "Plasmid",
+                     paste(rep(" ", 60), collapse=""),
+                     ".",
+                     collapse="")
+  x <- list(title = hacktitle,
             titlefont = f)
 
   y <- list(title = "Sample",
