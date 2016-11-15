@@ -276,7 +276,8 @@ create_plotly <- function(report,
   # }
 
   pp.noalpha <- pp.noalpha +
-    theme(axis.text.x = element_text(colour = colours.amr2))
+    theme(axis.text.x = element_text(colour = colours.amr2)) +
+    guides(fill=guide_legend(ncol=2))
 
   pp.noalpha <- pp.noalpha +
     geom_tile(aes(x = Plasmid,
@@ -308,15 +309,15 @@ create_plotly <- function(report,
            r = 100,
            b = 200,
            t = 100,
-           pad = 50)
+           pad = 10)
 
   f <- list(family = "Arial, Helvetica, sans-serif",
             size = 18,
             color = "#7f7f7f")
 
-  hacktitle <- paste(".", paste(rep(" ", 60), collapse=""),
+  hacktitle <- paste(".", paste(rep(" ", 75), collapse=""),
                      "Plasmid",
-                     paste(rep(" ", 60), collapse=""),
+                     paste(rep(" ", 75), collapse=""),
                      ".",
                      collapse="")
   x <- list(title = hacktitle,
@@ -331,8 +332,8 @@ create_plotly <- function(report,
                                           "text",
                                           "label",
                                           "fill")) %>%
-    plotly::layout(autosize = T,
-                   width = 1200,
+    plotly::layout(autosize = F,
+                   width = 1600,
                    height = 1000,
                    font = f,
                    margin = m,

@@ -157,7 +157,7 @@ subsampler <- function(report,
 #' @importFrom stats as.dendrogram dist hclust
 #' @export
 tree_maker <- function(report, hc.only = NA){
-  if (length(levels(report$Sample)) == 0){
+  if (length(levels(as.factor(report$Sample))) == 0){
     tree <- ggplot() + geom_blank() + theme_void()
     return(tree)
   }
@@ -244,9 +244,11 @@ order_report <- function(report, anonymize = NA){
   # Arrange by Inc_group then average Sureness
   report <- arrange(report, Inc_group, average)
 
-  # Order the Plasmids based on order of appearance (ie. by inc group)
+  # Order the Plasmids and Sample based on order of appearance (ie. by inc group)
   report$Plasmid <- ordered(report$Plasmid,
                             levels = unique(report$Plasmid))
+  report$Sample <- ordered(report$Sample,
+                           levels = unique(report$Sample))
 
   report$Inc_group <- as.factor(report$Inc_group)
   report$AMR_gene <- as.factor(report$AMR_gene)
