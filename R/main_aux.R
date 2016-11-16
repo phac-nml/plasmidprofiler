@@ -77,7 +77,9 @@ main <- function(blast.file,
                  anonymize=NA,
                  main.title="Plasmid Profiles") {
 
-  file_cacher()
+  if (!exists("filecache")){
+    file_cacher()
+  }
 
   if (typeof(blast.file) == "character"){
     blast.file <- read_blast(blast.file)
@@ -110,10 +112,9 @@ main <- function(blast.file,
   save_files(report, webpage = 1, title = main.title)
 }
 
-#' Save Files Produced
+#' Save Files
 #'
-#' This function uses RColorBrewer to produce palettes based
-#' on the factor levels of the identified column in a report.
+#' Save various files: JPG, CSV, HTML depending on parameters
 #'
 #' @param report Dataframe of results
 #' @param plot.png Do you want to save a png? (Anything but NA)
@@ -123,7 +124,7 @@ main <- function(blast.file,
 #' @return Named vector of colours, names are factor levels of column supplied
 #' @import ggplot2
 #' @import dplyr
-#' @importFrom plotly ggplotly plotly_POST as.widget
+#' @importFrom plotly ggplotly plotly_POST as_widget
 #' @importFrom htmlwidgets saveWidget
 #' @importFrom utils write.csv
 #' @examples
@@ -147,7 +148,6 @@ save_files <- function(report,
            type = "cairo",
            device="png",
            width = 12)
-
   }
 
   if (!is.na(report.csv)){
@@ -158,7 +158,7 @@ save_files <- function(report,
   # Write offline HTML object
   if (!is.na(webpage)){
     ppp <- create_plotly(report)
-    htmlwidgets::saveWidget(as.widget(ppp), paste(filename, ".html", sep = ""))
+    htmlwidgets::saveWidget(as_widget(ppp), paste(filename, ".html", sep = ""))
   }
 }
 
@@ -174,7 +174,11 @@ save_files <- function(report,
 #'  }
 #' @export
 normalize <- function(x){
-  (x - min(x)) / (max(x) - min(x))
+  if (max(x)-min(x) == 0){
+    max(x)/min(x)
+  }else{
+    (x - min(x)) / (max(x) - min(x))
+  }
 }
 
 #' Minmax
@@ -208,11 +212,12 @@ minmax <- function(df, maxcol, mincol){
 #'
 #' Creates filecache environment if needed
 #'
+#' @export
 file_cacher <- function(){
-  if (!exists("filecache")){
-    packageStartupMessage("No filecache found, creating...")
+  #if (!exists("filecache")){
+  #  packageStartupMessage("No filecache found, creating...")
     filecache <<- new.env(parent = .GlobalEnv)
-    filename <- paste("P2Run", Sys.Date(), collapse = "", sep = "")
-    assign("name", filename, envir = filecache)
-  }
+    assign("name", "P2Run", envir = filecache)
+    assign("mods", "Subsampling applied: ", envir = filecache)
+  #}
 }

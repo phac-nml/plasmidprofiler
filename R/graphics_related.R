@@ -88,6 +88,7 @@ plot_heatmap <- function(report, len.highlight=NA){
                ) +
     geom_tile(colour = "white") +
     scale_fill_manual(values = colours.inc, name = "Incompatibility Group") +
+    guides(fill=guide_legend(ncol=2)) +
     theme_classic(base_size = 8) +
     theme(axis.text.x = element_text(angle = 90,
                                      hjust = 1,
@@ -166,9 +167,9 @@ create_grob <- function(report, grob.title = "Plasmid Profiles"){
 
   title <- textGrob(grob.title, gp = gpar(fontsize = 24))
 
-  filename <- get("name", envir = filecache)
+  mods <- get("mods", envir = filecache)
 
-  footnote <- textGrob(filename,
+  footnote <- textGrob(mods,
                        x = 0,
                        hjust = 0,
                        gp = gpar(fontface = "italic"))
@@ -211,7 +212,7 @@ create_grob <- function(report, grob.title = "Plasmid Profiles"){
 #' @param title Title of heatmap
 #' @param len.highlight If anything but NA will highlight the largest plasmid hit per incompatibility group
 #' @return plotly object
-#' @importFrom plotly ggplotly plotly_POST
+#' @importFrom plotly ggplotly plotly_POST config
 #' @importFrom graphics layout
 #' @import ggplot2
 #' @import dplyr
@@ -257,51 +258,56 @@ create_plotly <- function(report,
     scale_x_discrete(expand = c(0, 0)) +
     scale_y_discrete(expand = c(0, 0))
 
-  if (!is.na(len.highlight)){
-    seq.lengths <- report[report$Inc_group != "-", ] %>%
-      group_by(Sample, Inc_group) %>%
-      filter(Coverage >= 99) %>%
-      arrange(Sample, Inc_group, desc(Length)) %>%
-      slice(c(1))
-    seq.lengths$maxed <- "Attention"
-    report <- full_join(seq.lengths, report, by = colnames(report))
-    pp.noalpha <- pp.noalpha +
-      geom_point(aes(x = Plasmid,
-                     y = Sample),
-                 seq.lengths[, 1:2],
-                 inherit.aes = F,
-                 alpha = 0.5,
-                 size = 0.5)
-  }
+  # if (!is.na(len.highlight)){
+  #   seq.lengths <- report[report$Inc_group != "-", ] %>%
+  #     group_by(Sample, Inc_group) %>%
+  #     filter(Coverage >= 99) %>%
+  #     arrange(Sample, Inc_group, desc(Length)) %>%
+  #     slice(c(1))
+  #   seq.lengths$maxed <- "Attention"
+  #   report <- full_join(seq.lengths, report, by = colnames(report))
+  #   pp.noalpha <- pp.noalpha +
+  #     geom_point(aes(x = Plasmid,
+  #                    y = Sample),
+  #                seq.lengths[, 1:2],
+  #                inherit.aes = F,
+  #                alpha = 0.5,
+  #                size = 0.5)
+  # }
 
   pp.noalpha <- pp.noalpha +
-    theme(axis.text.x = element_text(colour = colours.amr2))
+    theme(axis.text.x = element_text(colour = colours.amr2)) +
+    guides(fill=guide_legend(ncol=2))
 
   pp.noalpha <- pp.noalpha +
-    geom_point(aes(x = Plasmid,
+    geom_tile(aes(x = Plasmid,
                    y = Sample,
                    label = AMR_gene,
+                   fill = Inc_group,
                    text = paste("Sureness: ",
                                 round(Sureness, 2))),
                     inherit.aes = F,
                     alpha = 0.001,
-                    size = 0.8,
+                    width = 0.99,
+                    height = 0.99,
+                    show.legend = FALSE,
                     colour = "white")
 
-  pp.noalpha <- pp.noalpha +
-    geom_point(aes(x = Plasmid,
-                   y = Sample,
-                   label = AMR_gene,
-                   text = paste("Sureness: ",
-                                round(Sureness, 2))),
-               data = subset(report, AMR_gene != "-"),
-               inherit.aes = F,
-               alpha = 0.25,
-               size = 1)
+  # Originally included to show which have AMR gene present. Not working as desired
+  # pp.noalpha <- pp.noalpha +
+  #   geom_point(aes(x = Plasmid,
+  #                  y = Sample,
+  #                  label = AMR_gene,
+  #                  text = paste("Sureness: ",
+  #                               round(Sureness, 2))),
+  #              data = subset(report, AMR_gene != "-"),
+  #              inherit.aes = F,
+  #              alpha = 0.25,
+  #              size = 1)
 
-  m <- list(l = 150,
+  m <- list(l = 200,
            r = 100,
-           b = 100,
+           b = 200,
            t = 100,
            pad = 10)
 
@@ -309,7 +315,12 @@ create_plotly <- function(report,
             size = 18,
             color = "#7f7f7f")
 
-  x <- list(title = "Plasmid",
+  hacktitle <- paste(".", paste(rep(" ", 75), collapse=""),
+                     "Plasmid",
+                     paste(rep(" ", 75), collapse=""),
+                     ".",
+                     collapse="")
+  x <- list(title = hacktitle,
             titlefont = f)
 
   y <- list(title = "Sample",
@@ -321,14 +332,22 @@ create_plotly <- function(report,
                                           "text",
                                           "label",
                                           "fill")) %>%
-    plotly::layout(autosize = T,
-                   width = 1200,
+    plotly::layout(autosize = F,
+                   width = 1600,
                    height = 1000,
                    font = f,
                    margin = m,
                    xaxis = x,
                    yaxis = y,
-                   title = title)
+                   title = title) %>%
+    plotly::config(., displaylogo = FALSE,
+                   modeBarButtonsToRemove = list('sendDataToCloud',
+                                                 'select2d',
+                                                 'lasso2d',
+                                                 'hoverClosestCartesian',
+                                                 'hoverCompareCartesian'))
+                                                 # 'toImage'))
+
 
   # Publish
   if (!is.na(post)){

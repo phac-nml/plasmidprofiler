@@ -29,6 +29,8 @@
 #' @seealso \code{\link{subsampler}}, \code{\link{combine_results}}
 #' @param report Dataframe of results produced by \code{\link{subsampler}} or \code{\link{combine_results}}
 #' @return Report with zetner score added
+#' @importFrom magrittr %>%
+#' @importFrom dplyr group_by arrange ungroup
 #' @examples
 #' \dontrun{
 #' zetner_score(report)
@@ -101,18 +103,18 @@ subsampler <- function(report,
                        len.filter = NA,
                        inc.combine = NA){
 
-  filename <- get("name", envir = filecache) # Import from cache
+  mods <- get("mods", envir = filecache) # Import from cache
 
   if (!is.na(cov.filter)){
-    #filename <- paste(filename, "_cov", cov.filter, sep = "")
+    mods <- paste(mods, " Coverage ", cov.filter, "%", sep = "")
     report <- report[report$Coverage > cov.filter, ]
   }
   if (!is.na(sure.filter)){
-    #filename <- paste(filename, "_sure", sure.filter, sep = "")
+    mods <- paste(mods, " Sureness ", sure.filter, sep = "")
     report <- report[report$Sureness > sure.filter, ]
   }
   if (!is.na(len.filter)){
-    #filename <- paste(filename, "_len", len.filter, sep = "")
+    mods <- paste(mods, " Length ", len.filter, sep = "")
     report <- report[report$Length > len.filter, ]
   }
   if (!is.na(inc.combine)){
@@ -120,9 +122,12 @@ subsampler <- function(report,
     report$Inc_group <- str_split_fixed(report$Inc_group, "\\(", 2)[, 1]
     # Replace all individual Col-type plasmids with just Col
     report$Inc_group[grep("Col", report$Inc_group)] <- "Col"
+    mods <- paste(mods, " Inc Groups Combined")
   }
-
-  assign("name", filename, envir = filecache) # Re-save filename to cache
+  if (mods == "Subsampling applied:"){
+    mods <- paste(mods, "none")
+  }
+  assign("mods", mods, envir = filecache) # Re-save filename to cache
 
   drop.levels(report)
 }
@@ -152,6 +157,11 @@ subsampler <- function(report,
 #' @importFrom stats as.dendrogram dist hclust
 #' @export
 tree_maker <- function(report, hc.only = NA){
+  if (length(levels(as.factor(report$Sample))) == 0){
+    tree <- ggplot() + geom_blank() + theme_void()
+    return(tree)
+  }
+
   reportable.wide <- dcast(report, Sample ~ Plasmid, value.var = "Sureness")
   reportable.wide[is.na(reportable.wide)] <- 0
 
@@ -162,8 +172,13 @@ tree_maker <- function(report, hc.only = NA){
   rownames (reportable.matrix) <- rnames
 
 
-  reportable.hc <- hclust(dist(reportable.matrix))
+  reportable.hc <- hclust(dist(reportable.matrix)) # Very slow. Implement Rcpp?
 
+  if (!is.na(hc.only)){
+    return(reportable.hc)
+  }
+
+  # Node stackoverflow on large data sets on dendro_data
   tree.data <- dendro_data(as.dendrogram(reportable.hc), type = "rectangle")
   tree <- ggplot(segment(tree.data)) +
     geom_segment(aes(x = x, y = y, xend = xend, yend = yend)) +
@@ -189,11 +204,9 @@ tree_maker <- function(report, hc.only = NA){
                                  0),
                                "null"))
     }
-  if (!is.na(hc.only)){
-    reportable.hc
-  }else{
+
     tree
-  }
+
 }
 
 
@@ -214,14 +227,14 @@ tree_maker <- function(report, hc.only = NA){
 #' @importFrom magrittr %>%
 #' @export
 order_report <- function(report, anonymize = NA){
+  if (length(levels(report$Sample)) > 1){
+    reportable.hc <- tree_maker(report, hc.only = 1)
+    reportable.phylo <- as.phylo(reportable.hc)
 
-  reportable.hc <- tree_maker(report, hc.only = 1)
-  reportable.phylo <- as.phylo(reportable.hc)
-
-  # First order Samples based on HC / Phylo
-  report$Sample <- ordered(report$Sample,
-                    levels = reportable.phylo$tip.label[reportable.hc$order])
-
+    # First order Samples based on HC / Phylo
+    report$Sample <- ordered(report$Sample,
+                      levels = reportable.phylo$tip.label[reportable.hc$order])
+  }
   report <- report %>%
     group_by(Plasmid) %>%
     mutate(average = mean(Sureness))
@@ -231,9 +244,11 @@ order_report <- function(report, anonymize = NA){
   # Arrange by Inc_group then average Sureness
   report <- arrange(report, Inc_group, average)
 
-  # Order the Plasmids based on order of appearance (ie. by inc group)
+  # Order the Plasmids and Sample based on order of appearance (ie. by inc group)
   report$Plasmid <- ordered(report$Plasmid,
                             levels = unique(report$Plasmid))
+  report$Sample <- ordered(report$Sample,
+                           levels = unique(report$Sample))
 
   report$Inc_group <- as.factor(report$Inc_group)
   report$AMR_gene <- as.factor(report$AMR_gene)
