@@ -99,7 +99,7 @@ main <- function(blast.file,
                        inc.combine = combine.inc)
   report <- order_report(report, anonymize)
   save_files(report,
-             plot.jpg = 1,
+             plot.png = 1,
              report.csv = 1,
              title = main.title)
   create_plotly(report,
@@ -116,7 +116,7 @@ main <- function(blast.file,
 #' on the factor levels of the identified column in a report.
 #'
 #' @param report Dataframe of results
-#' @param plot.jpg Do you want to save a jpg? (Anything but NA)
+#' @param plot.png Do you want to save a png? (Anything but NA)
 #' @param report.csv Do you want to save a text report? (Anything but NA)
 #' @param webpage Do you want to save an interactive heatmap as html? (Anything but NA)
 #' @param title Enter a title for the plot
@@ -128,20 +128,26 @@ main <- function(blast.file,
 #' @importFrom utils write.csv
 #' @examples
 #' \dontrun{
-#'  save_files(report, plot.jpg=1, report.csv=1, webpage=NA)
+#'  save_files(report, plot.png=1, report.csv=1, webpage=NA)
 #' }
 #' @export
 save_files <- function(report,
-                       plot.jpg = NA,
+                       plot.png = NA,
                        report.csv = NA,
                        webpage = NA,
                        title = "Plasmid Profiles" ){
 
   filename <- get("name", envir = filecache)
 
-  if (!is.na(plot.jpg)){
+  if (!is.na(plot.png)){
     g <- create_grob(report, grob.title = title)
-    ggsave(paste(filename, ".jpg", sep = ""), g, device = "jpg", width = 12)
+    #ggsave(paste(filename, ".png", sep = ""), g, device = "csv", width = 12)
+    ggsave(paste(filename, ".png", sep = ""),
+           g,
+           type = "cairo",
+           device="png",
+           width = 12)
+
   }
 
   if (!is.na(report.csv)){
