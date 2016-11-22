@@ -208,7 +208,7 @@ tree_maker <- function(report, hc.only = NA){
 #' @importFrom magrittr %>%
 #' @export
 order_report <- function(report, anonymize = NA){
-  if (length(levels(report$Sample)) > 1){
+  if (length(levels(as.factor(report$Sample))) > 1){
     reportable.hc <- tree_maker(report, hc.only = 1)
     reportable.phylo <- as.phylo(reportable.hc)
 
@@ -228,8 +228,7 @@ order_report <- function(report, anonymize = NA){
   # Order the Plasmids and Sample based on order of appearance (ie. by inc group)
   report$Plasmid <- ordered(report$Plasmid,
                             levels = unique(report$Plasmid))
-  report$Sample <- ordered(report$Sample,
-                           levels = unique(report$Sample))
+
 
   report$Inc_group <- as.factor(report$Inc_group)
   report$AMR_gene <- as.factor(report$AMR_gene)

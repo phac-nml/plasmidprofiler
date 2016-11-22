@@ -194,7 +194,7 @@ create_grob <- function(report, grob.title = "Plasmid Profiles"){
 
   # And render the plot
   grid.newpage()
-  grid.draw(gt)
+
 
   g <- grid.arrange(gt)
   g
