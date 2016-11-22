@@ -36,6 +36,7 @@ Saves output files in working directory
 }
 \description{
 Run all the interim functions to produce outputs.
+Can be run in order individually if desired.
 \enumerate{
   \item \code{\link{read_blast}} Import the blast file, add column names
   \item \code{\link{blast_parser}} Parse imported file

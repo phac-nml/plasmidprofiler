@@ -4,13 +4,13 @@
 \alias{save_files}
 \title{Save Files}
 \usage{
-save_files(report, plot.jpg = NA, report.csv = NA, webpage = NA,
+save_files(report, plot.png = NA, report.csv = NA, webpage = NA,
   title = "Plasmid Profiles")
 }
 \arguments{
 \item{report}{Dataframe of results}
 
-\item{plot.jpg}{Do you want to save a jpg? (Anything but NA), "../dbdeclutter/srst2_vrrunE.tsv"}
+\item{plot.png}{Do you want to save a png? (Anything but NA)}
 
 \item{report.csv}{Do you want to save a text report? (Anything but NA)}
 
@@ -26,7 +26,7 @@ Save various files: JPG, CSV, HTML depending on parameters
 }
 \examples{
 \dontrun{
- save_files(report, plot.jpg=1, report.csv=1, webpage=NA)
+ save_files(report, plot.png=1, report.csv=1, webpage=NA)
 }
 }
 

@@ -23,7 +23,7 @@ sums them, arranges by sum, then returns the sorted dataframe
 }
 \examples{
 \dontrun{
- minmax(df, maxcol, mincol)
+ minmax(report, "Length", "Coverage")
  }
 }
 

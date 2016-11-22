@@ -73,10 +73,10 @@ read_blast <- function(br.file){
 
 #' Blast Results Parser Function
 #'
-#' This function loads the imported blast results, extracts desired columns, Create new column of ratio between hit
+#' Loads the imported blast results, extracts desired columns, Create new column of ratio between hit
 #' length to query length - higher as denominator, adjusts pID by this ratio. Any AMR results are removed from the returned df.
 #'
-#' @param blast.results Blast results loaded from read_blast
+#' @param blast.results Blast results loaded from read_blast or Global Env
 #' @return Blast table with pID adjusted by ratio of hit length to query length (larger as denominator)
 #' @examples
 #' \dontrun{
@@ -143,7 +143,7 @@ blast_parser <- function(blast.results){
 #' carry AMR genes at highest identity. May have issues with multiple genes per
 #' plasmid, currently optimized for identifying one of two genes
 #'
-#' @param blast.results Blast results loaded from read_blast
+#' @param blast.results Blast results loaded from read_blast or from Global Env
 #' @return Two column DF of plasmid names and genes present
 #' @importFrom magrittr %>%
 #' @importFrom dplyr group_by select top_n bind_rows
@@ -221,10 +221,12 @@ read_srst2 <- function(srst2.file){
 
 #' Combines SRST2 and Blast results into a single dataframe
 #'
-#' Cuts to desired columns, matches plasmids to BR and appends simplified INC names,
-#' all future modifications are done to this dataframe
+#' Combines blast and SRST2 results, cuts to desired columns (Sample,
+#' Plasmid, Inc_group, Coverage, Divergence, Length, Clusterid), matches
+#' plasmids to BR and appends simplified INC names, all future
+#' modifications are done to this dataframe
 #'
-#' @param br Blast results loaded from read_blast
+#' @param br Blast results parsed by blast_parser
 #' @param sr SRST2 results loaded from read_srst2
 #' @return Seven column dataframe of SRST2 results now including INC groups
 #' @examples

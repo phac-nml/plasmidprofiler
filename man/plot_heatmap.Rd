@@ -16,8 +16,8 @@ GGPLOT plotted heatmap
 }
 \description{
 Using a ggplot2 tile geometry this function will create a heatmap of values in the report
-coloured by incompatibility group, with alpha values from the sureness Zetner score. The order of
-samples is determined by order_reporty and plasmids by incompatibility group and Zetner score.
+coloured by incompatibility group, with alpha values from the sureness score. The order of
+samples is determined by order_report and plasmids by incompatibility group and sureness score.
 }
 \examples{
 \dontrun{

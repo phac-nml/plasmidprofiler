@@ -14,6 +14,7 @@ Normalized vector of values
 }
 \description{
 Normalizes a vector of values to a range of 0-1
+x - min(x)) / (max(x) - min(x)
 }
 \examples{
 \dontrun{

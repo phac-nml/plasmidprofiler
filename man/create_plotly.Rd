@@ -24,11 +24,11 @@ create_plotly(report, user, api.key, post = NA, title = "Plasmid Profiles",
 plotly object
 }
 \description{
-Combines the tree, heatmap, and titles to create final heatmap image.
+Builds the heatmap, creates final interactive plot.
 }
 \examples{
 \dontrun{
-create_plotly(report, title="Outbreak Plasmid Profiles")
+create_plotly(report, title="Plasmid Profiles")
 }
 }
 

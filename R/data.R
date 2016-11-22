@@ -12,7 +12,10 @@
 #' @references None Yet
 #' (\href{http://www.ncbi.nlm.nih.gov/}{PubMed})
 #'
-#' @source Here's where I got it from
+#' @source Strains graciously provided by the authors of the following papers:
+#' PMID: 26769926
+#' PMID: 25545311
+#' PMID: 26824951
 #'
 #' @examples
 #' data(blastdata)
@@ -32,7 +35,10 @@
 #' @references None Yet
 #' (\href{http://www.ncbi.nlm.nih.gov/}{PubMed})
 #'
-#' @source Here's where I got it from
+#' @source Strains graciously provided by the authors of the following papers:
+#' PMID: 26769926
+#' PMID: 25545311
+#' PMID: 26824951
 #'
 #' @examples
 #' data(srst2data)
@@ -52,7 +58,10 @@
 #' @references None Yet
 #' (\href{http://www.ncbi.nlm.nih.gov/}{PubMed})
 #'
-#' @source Here's where I got it from
+#' @source Strains graciously provided by the authors of the following papers:
+#' PMID: 26769926
+#' PMID: 25545311
+#' PMID: 26824951
 #'
 #' @examples
 #' data(report)

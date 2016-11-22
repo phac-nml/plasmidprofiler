@@ -7,13 +7,13 @@
 blast_parser(blast.results)
 }
 \arguments{
-\item{blast.results}{Blast results loaded from read_blast}
+\item{blast.results}{Blast results loaded from read_blast or Global Env}
 }
 \value{
 Blast table with pID adjusted by ratio of hit length to query length (larger as denominator)
 }
 \description{
-This function loads the imported blast results, extracts desired columns, Create new column of ratio between hit
+Loads the imported blast results, extracts desired columns, Create new column of ratio between hit
 length to query length - higher as denominator, adjusts pID by this ratio. Any AMR results are removed from the returned df.
 }
 \examples{

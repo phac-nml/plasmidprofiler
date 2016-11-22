@@ -184,27 +184,8 @@ tree_maker <- function(report, hc.only = NA){
     geom_segment(aes(x = x, y = y, xend = xend, yend = yend)) +
     coord_flip() +
     scale_y_reverse(expand = c(0, 0)) +
-    scale_x_continuous(expand = c(0.001, 0)) +
-    theme_dendro() +
-    if (nlevels(report$Sample) < 20){
-      # Add some padding around the upper and lower edges of the tree.
-      # 0.0027 per sample
-      theme(plot.margin =
-              unit(c(0.0027 * nlevels(report$Sample),
-                     0,
-                     0.0027 * nlevels(report$Sample),
-                     0),
-                   "null"))
-    }else{
-      # Add some padding around the upper and lower edges of the tree.
-      # 0.0015 per sample
-      theme(plot.margin = unit(c(0.00015 * nlevels(report$Sample),
-                                 0,
-                                 0.00015 * nlevels(report$Sample),
-                                 0),
-                               "null"))
-    }
-
+    scale_x_continuous(expand = c(0, 0.49)) +
+    theme_dendro()
     tree
 
 }

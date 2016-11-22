@@ -30,6 +30,7 @@
 #' Main: Run everything
 #'
 #' Run all the interim functions to produce outputs.
+#' Can be run in order individually if desired.
 #' \enumerate{
 #'   \item \code{\link{read_blast}} Import the blast file, add column names
 #'   \item \code{\link{blast_parser}} Parse imported file
@@ -165,6 +166,7 @@ save_files <- function(report,
 #' Normalize
 #'
 #' Normalizes a vector of values to a range of 0-1
+#' x - min(x)) / (max(x) - min(x)
 #'
 #' @param x Vector of values
 #' @return Normalized vector of values
@@ -194,7 +196,7 @@ normalize <- function(x){
 #' @importFrom dplyr arrange
 #' @examples
 #' \dontrun{
-#'  minmax(df, maxcol, mincol)
+#'  minmax(report, "Length", "Coverage")
 #'  }
 #' @export
 
@@ -210,7 +212,8 @@ minmax <- function(df, maxcol, mincol){
 
 #' Filecacher
 #'
-#' Creates filecache environment if needed
+#' Creates filecache environment if needed for transferring variables
+#' between functions.
 #'
 #' @export
 file_cacher <- function(){

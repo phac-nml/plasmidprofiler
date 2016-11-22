@@ -6,7 +6,10 @@
 \title{Example Table of Blast Results}
 \format{Dataframe.}
 \source{
-Here's where I got it from
+Strains graciously provided by the authors of the following papers:
+PMID: 26769926
+PMID: 25545311
+PMID: 26824951
 }
 \usage{
 data(blastdata)

@@ -53,8 +53,8 @@ define_colours <- function(report, column){
 #' Create GGPLOT Heatmap
 #'
 #' Using a ggplot2 tile geometry this function will create a heatmap of values in the report
-#' coloured by incompatibility group, with alpha values from the sureness Zetner score. The order of
-#' samples is determined by order_reporty and plasmids by incompatibility group and Zetner score.
+#' coloured by incompatibility group, with alpha values from the sureness score. The order of
+#' samples is determined by order_report and plasmids by incompatibility group and sureness score.
 #'
 #' @param report Dataframe of results
 #' @param len.highlight If anything but NA will highlight the largest plasmid hit per incompatibility group
@@ -203,7 +203,7 @@ create_grob <- function(report, grob.title = "Plasmid Profiles"){
 
 #' Create Plotly Object
 #'
-#' Combines the tree, heatmap, and titles to create final heatmap image.
+#' Builds the heatmap, creates final interactive plot.
 #'
 #' @param report Dataframe of results
 #' @param user User ID for plotly web publishing
@@ -219,7 +219,7 @@ create_grob <- function(report, grob.title = "Plasmid Profiles"){
 #'
 #' @examples
 #' \dontrun{
-#' create_plotly(report, title="Outbreak Plasmid Profiles")
+#' create_plotly(report, title="Plasmid Profiles")
 #' }
 #' @export
 create_plotly <- function(report,

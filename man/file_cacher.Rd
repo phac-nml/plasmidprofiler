@@ -7,6 +7,7 @@
 file_cacher()
 }
 \description{
-Creates filecache environment if needed
+Creates filecache environment if needed for transferring variables
+between functions.
 }
 

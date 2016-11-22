@@ -7,7 +7,7 @@
 amr_positives(blast.results)
 }
 \arguments{
-\item{blast.results}{Blast results loaded from read_blast}
+\item{blast.results}{Blast results loaded from read_blast or from Global Env}
 }
 \value{
 Two column DF of plasmid names and genes present

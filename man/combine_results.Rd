@@ -9,14 +9,16 @@ combine_results(sr, br)
 \arguments{
 \item{sr}{SRST2 results loaded from read_srst2}
 
-\item{br}{Blast results loaded from read_blast}
+\item{br}{Blast results parsed by blast_parser}
 }
 \value{
 Seven column dataframe of SRST2 results now including INC groups
 }
 \description{
-Cuts to desired columns, matches plasmids to BR and appends simplified INC names,
-all future modifications are done to this dataframe
+Combines blast and SRST2 results, cuts to desired columns (Sample,
+Plasmid, Inc_group, Coverage, Divergence, Length, Clusterid), matches
+plasmids to BR and appends simplified INC names, all future
+modifications are done to this dataframe
 }
 \examples{
 \dontrun{
