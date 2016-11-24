@@ -157,7 +157,7 @@ subsampler <- function(report,
 #' @importFrom stats as.dendrogram dist hclust
 #' @export
 tree_maker <- function(report, hc.only = NA){
-  if (length(levels(as.factor(report$Sample))) == 0){
+  if (length(levels(as.factor(report$Sample))) == 1){
     tree <- ggplot() + geom_blank() + theme_void()
     return(tree)
   }
