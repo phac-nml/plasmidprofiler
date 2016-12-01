@@ -81,7 +81,7 @@ main <- function(blast.file,
   if (!exists("filecache")){
     file_cacher()
   }
-
+  assign("mods", "Subsampling applied:", envir = filecache)
   if (typeof(blast.file) == "character"){
     blast.file <- read_blast(blast.file)
   }

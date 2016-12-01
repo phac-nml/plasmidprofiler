@@ -102,7 +102,7 @@ subsampler <- function(report,
                        sure.filter = NA,
                        len.filter = NA,
                        inc.combine = NA){
-
+  ics <- report
   mods <- get("mods", envir = filecache) # Import from cache
 
   if (!is.na(cov.filter)){
@@ -128,6 +128,10 @@ subsampler <- function(report,
     mods <- paste(mods, "none")
   }
   assign("mods", mods, envir = filecache) # Re-save filename to cache
+  if (nrow(report)==0){
+    warning("Filtering resulted in a 0 row table, returning unchanged report")
+    return(ics)
+  }
 
   drop.levels(report)
 }
