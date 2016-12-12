@@ -41,7 +41,7 @@ define_colours <- function(report, column){
   report[[column]] <- as.factor(report[[column]])
   levs <- levels(report[[column]])
   if (column == "AMR_gene"){
-    colours <- colorRampPalette(brewer.pal(7, "Dark2"))(length(levs))
+    colours <- colorRampPalette(c("#000000", brewer.pal(7, "Paired")))(length(levs))
   }else{
     colours <- colorRampPalette(brewer.pal(9, "Set1"))(length(levs))
   }
