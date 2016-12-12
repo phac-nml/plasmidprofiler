@@ -153,7 +153,7 @@ save_files <- function(report,
 
   if (!is.na(report.csv)){
     report <- arrange(report, Sample, Inc_group, desc(Sureness))
-    write.csv(report[, c(1:9)], paste(filename, ".csv", sep = ""))
+    write.csv(report, paste(filename, ".csv", sep = "")) #[, c(1:9)]
   }
 
   # Write offline HTML object

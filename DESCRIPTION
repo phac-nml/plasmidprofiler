@@ -31,5 +31,4 @@ Imports:
     reshape2,
     RGraphics,
     rmarkdown,
-    stringr,
-    viridis
+    stringr

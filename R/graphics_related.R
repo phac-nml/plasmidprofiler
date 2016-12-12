@@ -30,7 +30,6 @@
 #' @param report Dataframe of results produced by \code{\link{subsampler}} or \code{\link{combine_results}}
 #' @param column Specify a column by name
 #' @return Named vector of colours, names are factor levels of column supplied
-#' @importFrom viridis inferno
 #' @importFrom RColorBrewer brewer.pal
 #' @importFrom grDevices colorRampPalette
 #' @examples
@@ -42,7 +41,7 @@ define_colours <- function(report, column){
   report[[column]] <- as.factor(report[[column]])
   levs <- levels(report[[column]])
   if (column == "AMR_gene"){
-    colours <- colorRampPalette(inferno(20, end = 0.7))(length(levs))
+    colours <- colorRampPalette(brewer.pal(7, "Dark2"))(length(levs))
   }else{
     colours <- colorRampPalette(brewer.pal(9, "Set1"))(length(levs))
   }
