@@ -12,7 +12,7 @@ cl_arguments <- function(){
                 help="BLAST TSV file name", metavar="character"),
     make_option(c("-s", "--srst2file"), type="character", default=NULL,
                 help="SRST2 TSV file name", metavar="character"),
-    make_option(c("-u", "--sureness"), type="numeric", default=0.0,
+    make_option(c("-u", "--sureness"), type="numeric", default=NA,
                 help="Sureness cut off [default = %default]", metavar="numeric"),
     make_option(c("-c", "--coverage"), type="numeric", default=NA,
                 help="Percent coverage cut off", metavar="numeric"),
