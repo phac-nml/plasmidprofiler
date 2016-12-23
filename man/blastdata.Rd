@@ -9,7 +9,7 @@
 Strains graciously provided by the authors of the following papers:
 Complete Genome and Plasmid Sequences of Three Canadian Isolates of
 Salmonella enterica subsp. enterica Serovar Heidelberg from Human
-and Food Sources. 2016 Labbé et al.
+and Food Sources. 2016 Labbe et al.
 PMID: 26769926
 
 Complete Sequence of Four Multidrug-Resistant MOBQ1 Plasmids Harboring

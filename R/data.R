@@ -15,7 +15,7 @@
 #' @source Strains graciously provided by the authors of the following papers:
 #' Complete Genome and Plasmid Sequences of Three Canadian Isolates of
 #' Salmonella enterica subsp. enterica Serovar Heidelberg from Human
-#' and Food Sources. 2016 Labbé et al.
+#' and Food Sources. 2016 Labbe et al.
 #' PMID: 26769926
 #'
 #' Complete Sequence of Four Multidrug-Resistant MOBQ1 Plasmids Harboring
@@ -48,7 +48,7 @@
 #' @source Strains graciously provided by the authors of the following papers:
 #' Complete Genome and Plasmid Sequences of Three Canadian Isolates of
 #' Salmonella enterica subsp. enterica Serovar Heidelberg from Human
-#' and Food Sources. 2016 Labbé et al.
+#' and Food Sources. 2016 Labbe et al.
 #' PMID: 26769926
 #'
 #' Complete Sequence of Four Multidrug-Resistant MOBQ1 Plasmids Harboring
@@ -64,7 +64,18 @@
 #' data(srst2data)
 "srst2data"
 
-#' Example Complete Report
+#' Example Complete Report after the following steps.
+#' Blast data from attached blastdata table
+#' SRST2 data from attached srst2data table
+#'
+#' read_blast Import the blast file, add column names
+#' blast_parser Parse imported file
+#' amr_positives Detect AMR positive plasmids
+#' read_srst2 Import SRST2 file
+#' combine_results Combine SRST2 and Blast
+#' zetner_score Add Sureness value
+#' amr_presence Add detected AMR to report
+#' order_report Arrange report
 #'
 #'
 #' @docType data
@@ -81,7 +92,7 @@
 #' @source Strains graciously provided by the authors of the following papers:
 #' Complete Genome and Plasmid Sequences of Three Canadian Isolates of
 #' Salmonella enterica subsp. enterica Serovar Heidelberg from Human
-#' and Food Sources. 2016 Labbé et al.
+#' and Food Sources. 2016 Labbe et al.
 #' PMID: 26769926
 #'
 #' Complete Sequence of Four Multidrug-Resistant MOBQ1 Plasmids Harboring
