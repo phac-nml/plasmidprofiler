@@ -3,7 +3,6 @@ Type: Package
 Title: Visualization of Plasmid Profile Results
 Version: 0.1.5
 Authors@R: person("Adrian", "Zetner", email = "adrian.zetner@phac-aspc.gc.ca", role = c("aut", "cre"))
-Author: Adrian Zetner [aut, cre],
 Maintainer: Adrian Zetner <adrian.zetner@phac-aspc.gc.ca>
 Description: Contains functions developed to combine the results of querying a plasmid database using
     short-read sequence typing with the results of a blast analysis against the query results.

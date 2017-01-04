@@ -20,13 +20,6 @@
 #
 #  =============================================================================
 
-
-# Create filecache environment to store filename outside of all functions
-.onAttach <- function(libname, pkgname) {
-  packageStartupMessage("Welcome")
-  file_cacher()
-}
-
 #' Main: Run everything
 #'
 #' Run all the interim functions to produce outputs.
