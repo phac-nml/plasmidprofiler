@@ -1,7 +1,7 @@
 Package: Plasmidprofiler
 Type: Package
 Title: Visualization of Plasmid Profile Results
-Version: 0.1.5
+Version: 0.1.6
 Authors@R: person("Adrian", "Zetner", email = "adrian.zetner@phac-aspc.gc.ca", role = c("aut", "cre"))
 Maintainer: Adrian Zetner <adrian.zetner@phac-aspc.gc.ca>
 Description: Contains functions developed to combine the results of querying a plasmid database using
