@@ -14,7 +14,6 @@ Suggests:
     lintr
 Imports:
     ape,
-    dendextend,
     dplyr,
     gdata,
     ggdendro,
@@ -28,6 +27,4 @@ Imports:
     plyr,
     RColorBrewer,
     reshape2,
-    RGraphics,
-    rmarkdown,
     stringr

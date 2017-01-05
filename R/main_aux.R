@@ -152,7 +152,12 @@ save_files <- function(report,
   # Write offline HTML object
   if (!is.na(webpage)){
     ppp <- create_plotly(report)
-    htmlwidgets::saveWidget(as_widget(ppp), paste(filename, ".html", sep = ""))
+    if (Sys.which("pandoc") == "") {
+      warning("Saving an HTML widget requires pandoc. For details see:\n",
+              "https://github.com/rstudio/rmarkdown/blob/master/PANDOC.md")
+    }else{
+      htmlwidgets::saveWidget(as_widget(ppp), paste(filename, ".html", sep = ""))
+    }
   }
 }
 
