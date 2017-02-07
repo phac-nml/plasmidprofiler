@@ -1,0 +1,7 @@
+^.*\.Rproj$
+^\.Rproj\.user
+README.md
+LICENSE.txt
+NOTICE.txt
+.gitlab-ci.yml
+^\.Rproj\.user$
