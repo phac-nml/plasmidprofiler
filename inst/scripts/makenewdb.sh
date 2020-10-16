@@ -11,23 +11,25 @@ eval "$(conda shell.bash hook)"
 #sed -i '1 i #!/usr/bin/env python' csv_to_gene_db.py
 #ln -s $CONDA_PREFIX/software/* $CONDA_PREFIX/bin/
 
-echo "Making and moving into directory `date +'%Y%m%d'`"
-mkdir `date +'%Y%m%d'`
+WDIR=`date +'%Y%m%d'`/
+echo "Working directory is $WDIR"
+mkdir $WDIR
+
+if [ $# -eq 0 ]
+  then
+    echo "No fasta supplied, getting the latest refseq plasmids"    
+    wget https://ftp.ncbi.nlm.nih.gov/refseq/release/plasmid/plasmid.1.1.genomic.fna.gz -O sequences.fna.gz
+    while [ ! -f sequences.fna.gz ]; do sleep 1; done
+    gunzip sequences.fna.gz
+  else
+    cp $1 sequences.fna     
+fi
+
+mv sequences.fna $WDIR
 cd `date +'%Y%m%d'`
 
 echo "Activate the SRST2 env"
 conda activate srst2
-
-if [ $# -eq 0 ]
-  then
-    echo "No fasta supplied, getting the latest refseq plasmids"
-    exit 1
-    wget https://ftp.ncbi.nlm.nih.gov/refseq/release/plasmid/plasmid.1.1.genomic.fna.gz
-    gunzip plasmid.1.1.genomic.fna.gz    
-  else
-     echo "Hello world"
-     exit 1
-fi
 
 #Do you have a CDHIT environ?
 # sbatch -p NMLResearch -c 1 --mem 1G --wrap="conda create -y -n CDHIT-maxseq10mn cd-hit=4.8.1"
@@ -46,7 +48,7 @@ fi
 # Go back to your new db dir and cluster: Refseq
 echo "Cluster at 99% length and identity using custom built cd-hit with MAXSEQ=10mn"
 conda activate CDHIT-maxseq10mn
-sbatch -p NMLResearch -c 32 --mem=64G --wrap="cd-hit-est -i plasmid.1.1.genomic.fna -o db.cluster -c 0.99 -n 10 -s 0.99 -M 0 -T 0"
+sbatch -p NMLResearch -c 32 --mem=64G --wrap="cd-hit-est -i sequences.fna -o db.cluster -c 0.99 -n 10 -s 0.99 -M 0 -T 0"
 
 echo "Waiting on CDHIT"
 while [ ! -f db.cluster.clstr ]; do sleep 5; done
@@ -59,7 +61,7 @@ echo "Prepare SRST2 formatted databases using scripts"
 conda activate srst2
 mkdir fasta
 cd fasta
-sbatch -p NMLResearch -c 4 --mem=16G --wrap="cdhit_to_csv.py --cluster_file ../db.collapsed.clstr --infasta_file ../plasmid.1.1.genomic.fna --outfile ../db.csv"
+sbatch -p NMLResearch -c 4 --mem=16G --wrap="cdhit_to_csv.py --cluster_file ../db.collapsed.clstr --infasta_file ../sequences.fna --outfile ../db.csv"
 while [ ! -f ../db.csv ]; do sleep 5; done
 
 cat *.fsa > collapsed.fasta
