@@ -18,9 +18,16 @@ cd `date +'%Y%m%d'`
 echo "Activate the SRST2 env"
 conda activate srst2
 
-echo "Get the latest refseq plasmids"
-wget https://ftp.ncbi.nlm.nih.gov/refseq/release/plasmid/plasmid.1.1.genomic.fna.gz
-gunzip plasmid.1.1.genomic.fna.gz
+if [ $# -eq 0 ]
+  then
+    echo "No fasta supplied, getting the latest refseq plasmids"
+    exit 1
+    wget https://ftp.ncbi.nlm.nih.gov/refseq/release/plasmid/plasmid.1.1.genomic.fna.gz
+    gunzip plasmid.1.1.genomic.fna.gz    
+  else
+     echo "Hello world"
+     exit 1
+fi
 
 #Do you have a CDHIT environ?
 # sbatch -p NMLResearch -c 1 --mem 1G --wrap="conda create -y -n CDHIT-maxseq10mn cd-hit=4.8.1"
