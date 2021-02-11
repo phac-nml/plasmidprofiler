@@ -15,18 +15,23 @@ WDIR=`date +'%Y%m%d'`/
 echo "Working directory is $WDIR"
 mkdir $WDIR
 
+array=( 1 2 3 4 5 6 7 8 9)
+
 if [ $# -eq 0 ]
   then
     echo "No fasta supplied, getting the latest refseq plasmids"    
-    wget https://ftp.ncbi.nlm.nih.gov/refseq/release/plasmid/plasmid.1.1.genomic.fna.gz -O sequences.fna.gz
-    while [ ! -f sequences.fna.gz ]; do sleep 1; done
-    gunzip sequences.fna.gz
+    for i in "${array[@]}"; 
+      do echo wget https://ftp.ncbi.nlm.nih.gov/refseq/release/plasmid/plasmid.$i.1.genomic.fna.gz -O sequences.$i.fna.gz; 
+      while [ ! -f sequences.fna.gz ]; do sleep 1; 
+      echo gunzip sequences.$i.fna.gz; 
+    done
+    cat sequences.* > sequences.fna    
   else
     cp $1 sequences.fna     
 fi
 
-mv sequences.fna $WDIR
-cd `date +'%Y%m%d'`
+mv sequences.fna 
+cd $WDIR
 
 echo "Activate the SRST2 env"
 conda activate srst2
