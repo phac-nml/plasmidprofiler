@@ -20,10 +20,10 @@ array=( 1 2 3 4 5 6 7 8 9)
 if [ $# -eq 0 ]
   then
     echo "No fasta supplied, getting the latest refseq plasmids"    
-    for i in "${array[@]}"; 
-      do echo wget https://ftp.ncbi.nlm.nih.gov/refseq/release/plasmid/plasmid.$i.1.genomic.fna.gz -O sequences.$i.fna.gz; 
-      while [ ! -f sequences.fna.gz ]; do sleep 1; 
-      echo gunzip sequences.$i.fna.gz; 
+    for i in "${array[@]}" 
+      do wget https://ftp.ncbi.nlm.nih.gov/refseq/release/plasmid/plasmid.$i.1.genomic.fna.gz -O sequences.$i.fna.gz
+      while [ ! -f sequences.$i.fna.gz ]; do sleep 1; done
+      gunzip sequences.$i.fna.gz 
     done
     cat sequences.* > sequences.fna    
   else
