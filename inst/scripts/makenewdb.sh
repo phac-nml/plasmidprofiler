@@ -30,7 +30,7 @@ if [ $# -eq 0 ]
     cp $1 sequences.fna     
 fi
 
-mv sequences.fna 
+mv sequences.fna $WDIR
 cd $WDIR
 
 echo "Activate the SRST2 env"
